@@ -1,0 +1,12 @@
+.menu.menu.menu {
+  border-inline-end: unset;
+
+  :global(.ant-menu-item) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.title.title {
+  margin: 8px 0;
+}
