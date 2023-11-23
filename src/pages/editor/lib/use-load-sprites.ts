@@ -13,7 +13,12 @@ const loadAllSpritesFromBase64 = (...base64objects: string[]) => {
       (base64object) =>
         new Promise<Sprite>((resolve) => {
           const sprite = Sprite.from('data:image/png;base64,' + base64object)
-          sprite.texture.baseTexture.on(`loaded`, () => resolve(sprite))
+          if (sprite.texture.baseTexture.valid) {
+            resolve(sprite)
+          }
+          sprite.texture.baseTexture.on(`loaded`, () => {
+            resolve(sprite)
+          })
         }),
     ),
   )
