@@ -13,3 +13,7 @@
 .button.button {
   height: 100%;
 }
+
+.spinnerContainer.spinnerContainer :global(.ant-spin) {
+  max-height: 504px;
+}

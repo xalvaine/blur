@@ -48,7 +48,10 @@ export const Upload = ({
   return (
     <div className={styles.wrapper}>
       {isLoading ? (
-        <Spin tip='Подготовка изображения'>
+        <Spin
+          tip='Подготовка изображения'
+          wrapperClassName={styles.spinnerContainer}
+        >
           <div />
         </Spin>
       ) : (

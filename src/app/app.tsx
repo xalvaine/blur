@@ -6,7 +6,14 @@ import { ConfigProvider } from 'antd'
 
 export const App = () => {
   return (
-    <ConfigProvider componentSize='large'>
+    <ConfigProvider
+      componentSize='large'
+      theme={{
+        token: {
+          colorPrimary: `#7C50F3`,
+        },
+      }}
+    >
       <Editor />
     </ConfigProvider>
   )

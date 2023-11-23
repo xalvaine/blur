@@ -3,3 +3,9 @@
   grid-gap: 8px;
   align-content: start;
 }
+
+@media (min-width: 768px) {
+  .wrapper {
+    grid-gap: 12px;
+  }
+}
