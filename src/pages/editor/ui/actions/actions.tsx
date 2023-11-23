@@ -1,12 +1,14 @@
 import { Button } from 'antd'
 import React, { Dispatch, SetStateAction, useCallback } from 'react'
 import { Application, ICanvas, Sprite, DisplayObject } from 'pixi.js'
+import classNames from 'classnames'
 
 import { BlurTypes } from '../controls'
 
 import styles from './actions.module.scss'
 
 interface ActionsProps<T = Application<ICanvas> | undefined> {
+  className?: string
   setImageSource: Dispatch<SetStateAction<File | undefined>>
   setSelectedFilter: Dispatch<SetStateAction<BlurTypes>>
   setSprites: Dispatch<SetStateAction<Sprite[]>>
@@ -16,6 +18,7 @@ interface ActionsProps<T = Application<ICanvas> | undefined> {
 }
 
 export const Actions = ({
+  className,
   setImageSource,
   setSelectedFilter,
   pixiApp,
@@ -49,7 +52,7 @@ export const Actions = ({
   }, [pixiApp, setImageSource, setPixiApp, setSelectedFilter, setSprites])
 
   return (
-    <div className={styles.wrapper}>
+    <div className={classNames(className, styles.wrapper)}>
       <Button
         block
         type='primary'

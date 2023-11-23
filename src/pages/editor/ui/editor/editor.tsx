@@ -47,20 +47,22 @@ export const Editor = () => {
           )}
         </div>
       </div>
-      <Controls
-        setFilters={setFilters}
-        separatedImage={separatedImage}
-        selectedFilter={selectedFilter}
-        setSelectedFilter={setSelectedFilter}
-      />
-      <Actions
-        setImageSource={setImageSource}
-        setSprites={setSprites}
-        setSelectedFilter={setSelectedFilter}
-        setPixiApp={setPixiApp}
-        pixiApp={pixiApp}
-        separatedImage={separatedImage}
-      />
+      <div className={styles.interactionsBlock}>
+        <Controls
+          setFilters={setFilters}
+          separatedImage={separatedImage}
+          selectedFilter={selectedFilter}
+          setSelectedFilter={setSelectedFilter}
+        />
+        <Actions
+          setImageSource={setImageSource}
+          setSprites={setSprites}
+          setSelectedFilter={setSelectedFilter}
+          setPixiApp={setPixiApp}
+          pixiApp={pixiApp}
+          separatedImage={separatedImage}
+        />
+      </div>
     </div>
   )
 }

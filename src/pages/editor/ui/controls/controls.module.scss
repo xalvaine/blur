@@ -10,3 +10,9 @@
 .title.title {
   margin: 8px 0;
 }
+
+@media (min-width: 768px) {
+  .title.title {
+    margin-top: 0;
+  }
+}

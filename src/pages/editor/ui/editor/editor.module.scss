@@ -21,3 +21,25 @@
   padding: 16px;
   display: flex;
 }
+
+.interactionsBlock {
+  display: grid;
+  grid-gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    grid-template-columns: 1fr auto;
+    max-width: 768px;
+    margin: auto;
+    grid-gap: 16px;
+    padding: 24px;
+    height: 100dvh;
+    align-content: center;
+  }
+
+  .interactionsBlock {
+    width: 200px;
+    align-content: space-between;
+  }
+}
