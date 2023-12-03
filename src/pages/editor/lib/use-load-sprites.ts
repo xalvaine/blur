@@ -12,7 +12,7 @@ const loadAllSpritesFromBase64 = (...base64objects: string[]) => {
     base64objects.map(
       (base64object) =>
         new Promise<Sprite>((resolve) => {
-          const sprite = Sprite.from('data:image/png;base64,' + base64object)
+          const sprite = Sprite.from(base64object)
           if (sprite.texture.baseTexture.valid) {
             resolve(sprite)
           }
@@ -31,6 +31,7 @@ export const useLoadSprites = ({
 }: UseHandleSetBackgroundParams) => {
   const handleSetBackground = useCallback(async () => {
     if (!separatedImage || !pixiApp) {
+      setSprites([])
       return
     }
 

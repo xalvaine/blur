@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 import { Application, Filter, ICanvas, Sprite } from 'pixi.js'
 
+import {
+  ModelType,
+  useBackgroundRemoval,
+} from 'features/background-removal/lib'
+
 import { Scene } from '../scene'
 import { Upload } from '../upload'
 import { BlurTypes, Controls } from '../controls'
 import { Actions } from '../actions'
+import { ModelPicker } from '../model-picker'
 import { useLoadSprites } from '../../lib/use-load-sprites'
-import { useSeparatedImage } from '../../lib/use-separated-image'
 import { useApplyBackgroundFilters } from '../../lib/use-apply-background-filters'
 
 import styles from './editor.module.scss'
@@ -19,48 +24,46 @@ export const Editor = () => {
     BlurTypes.None,
   )
   const [filters, setFilters] = useState<Filter[]>([])
-  const {
-    data: separatedImage,
-    isLoading: isSeparatedImageLoading,
-    error: separateImageError,
-  } = useSeparatedImage({ image: imageSource })
-  useLoadSprites({ setSprites, pixiApp, separatedImage })
+  const [modelType, setModelType] = useState<ModelType>(ModelType.Small)
+  const { imageData, isImageProcessing, modelLoadingProgress, isModelLoading } =
+    useBackgroundRemoval({ image: imageSource, modelType })
+  useLoadSprites({ setSprites, pixiApp, separatedImage: imageData })
   useApplyBackgroundFilters({ pixiApp, filters, setSprites })
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.imageBack}>
         <div className={styles.image}>
-          {separatedImage ? (
+          {imageData ? (
             <Scene
               pixiApp={pixiApp}
               setPixiApp={setPixiApp}
               sprites={sprites}
-              separatedImage={separatedImage}
+              separatedImage={imageData}
             />
           ) : (
             <Upload
               onUpload={setImageSource}
-              isLoading={isSeparatedImageLoading}
-              separateImageError={!!separateImageError}
+              isImageProcessing={isImageProcessing}
+              isModelLoading={isModelLoading}
+              separateImageError={false}
+              loadingProgress={modelLoadingProgress}
             />
           )}
         </div>
       </div>
       <div className={styles.interactionsBlock}>
+        <ModelPicker modelType={modelType} setModelType={setModelType} />
         <Controls
           setFilters={setFilters}
-          separatedImage={separatedImage}
+          separatedImage={imageData}
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
         />
         <Actions
           setImageSource={setImageSource}
-          setSprites={setSprites}
-          setSelectedFilter={setSelectedFilter}
-          setPixiApp={setPixiApp}
           pixiApp={pixiApp}
-          separatedImage={separatedImage}
+          separatedImage={imageData}
         />
       </div>
     </div>

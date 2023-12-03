@@ -1,29 +1,21 @@
 import { Button } from 'antd'
 import React, { Dispatch, SetStateAction, useCallback } from 'react'
-import { Application, ICanvas, Sprite, DisplayObject } from 'pixi.js'
+import { Application, ICanvas, DisplayObject } from 'pixi.js'
 import classNames from 'classnames'
-
-import { BlurTypes } from '../controls'
 
 import styles from './actions.module.scss'
 
-interface ActionsProps<T = Application<ICanvas> | undefined> {
+interface ActionsProps {
   className?: string
   setImageSource: Dispatch<SetStateAction<File | undefined>>
-  setSelectedFilter: Dispatch<SetStateAction<BlurTypes>>
-  setSprites: Dispatch<SetStateAction<Sprite[]>>
-  pixiApp: T
-  setPixiApp: Dispatch<SetStateAction<T>>
+  pixiApp: Application<ICanvas> | undefined
   separatedImage: Components.Schemas.Segmentation | undefined
 }
 
 export const Actions = ({
   className,
   setImageSource,
-  setSelectedFilter,
   pixiApp,
-  setPixiApp,
-  setSprites,
   separatedImage,
 }: ActionsProps) => {
   const handleDownload = useCallback(async () => {
@@ -45,11 +37,7 @@ export const Actions = ({
 
   const handleClear = useCallback(() => {
     setImageSource(undefined)
-    setSelectedFilter(BlurTypes.None)
-    setSprites([])
-    pixiApp?.destroy()
-    setPixiApp(undefined)
-  }, [pixiApp, setImageSource, setPixiApp, setSelectedFilter, setSprites])
+  }, [setImageSource])
 
   return (
     <div className={classNames(className, styles.wrapper)}>

@@ -66,7 +66,6 @@ export const Controls = ({
       [BlurTypes.Horizontal]: new MotionBlurFilter([30, 0], 25),
       [BlurTypes.Zoom]: new ZoomBlurFilter({
         center: [separatedImage?.centerX || 0, separatedImage?.centerY || 0],
-        innerRadius: 0,
         strength: 0.1,
       }),
     }
@@ -86,17 +85,22 @@ export const Controls = ({
     setFilters(filter ? [filter] : [])
   }, [keyToFilter, selectedFilter, setFilters])
 
+  useEffect(() => {
+    if (!separatedImage) {
+      setSelectedFilter(BlurTypes.None)
+    }
+  }, [separatedImage, setSelectedFilter])
+
   return (
     <div>
       <Typography.Title level={5} className={styles.title}>
-        Тип размытия
+        Размытие
       </Typography.Title>
       <Menu
         disabled={!separatedImage}
         selectedKeys={[selectedFilter]}
         onSelect={handleSelectItem}
         className={classNames(className, styles.menu)}
-        defaultSelectedKeys={[BlurTypes.None]}
         mode='vertical'
         items={menuItems}
       />

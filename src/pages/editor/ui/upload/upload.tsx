@@ -1,19 +1,24 @@
 import { Button, notification, Spin } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import React, { useCallback, useEffect, useRef } from 'react'
+import { AxiosProgressEvent } from 'axios'
 
 import styles from './upload.module.scss'
 
 interface UploadProps {
   onUpload: (imageSource: File) => void
-  isLoading: boolean
+  isModelLoading: boolean
+  isImageProcessing: boolean
   separateImageError: boolean
+  loadingProgress: AxiosProgressEvent | undefined
 }
 
 export const Upload = ({
   onUpload,
-  isLoading,
+  isModelLoading,
+  isImageProcessing,
   separateImageError,
+  loadingProgress,
 }: UploadProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -47,9 +52,17 @@ export const Upload = ({
 
   return (
     <div className={styles.wrapper}>
-      {isLoading ? (
+      {isModelLoading || isImageProcessing ? (
         <Spin
-          tip='Подготовка изображения'
+          tip={
+            isModelLoading
+              ? `Загрузка модели ${
+                  loadingProgress?.progress
+                    ? Math.trunc(loadingProgress.progress * 100)
+                    : 0
+                }%`
+              : `Выделение фона`
+          }
           wrapperClassName={styles.spinnerContainer}
         >
           <div />

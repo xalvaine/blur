@@ -19,14 +19,33 @@ export const Scene = ({
   const pixiContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (
-      !!pixiApp ||
-      !pixiContainerRef.current ||
-      pixiContainerRef.current.hasChildNodes()
-    ) {
+    const pixiContainerElement = pixiContainerRef.current
+    if (!pixiApp || !pixiContainerElement) {
       return
     }
 
+    for (
+      let childIndex = 0;
+      childIndex < pixiContainerElement.children.length;
+      childIndex++
+    ) {
+      pixiContainerElement.removeChild(
+        pixiContainerElement.children[childIndex],
+      )
+    }
+
+    pixiContainerElement.appendChild(pixiApp.view as unknown as Node)
+    return () => {
+      if (pixiContainerElement?.children[0]) {
+        pixiContainerElement?.removeChild(pixiContainerElement.children[0])
+      }
+    }
+  }, [pixiApp])
+
+  useEffect(() => {
+    if (!!pixiApp || !separatedImage) {
+      return
+    }
     const app = new Application({
       backgroundAlpha: 0,
       width: separatedImage.width,
@@ -34,8 +53,21 @@ export const Scene = ({
       autoDensity: false,
     })
     setPixiApp(app)
-    pixiContainerRef.current.appendChild(app.view as unknown as Node)
-  }, [pixiApp, setPixiApp, separatedImage])
+  }, [pixiApp, separatedImage, setPixiApp])
+
+  useEffect(() => {
+    return () => {
+      pixiApp?.destroy()
+    }
+  }, [pixiApp])
+
+  useEffect(() => {
+    return () => {
+      if (pixiApp) {
+        setPixiApp(undefined)
+      }
+    }
+  }, [pixiApp, setPixiApp])
 
   useEffect(() => {
     if (!pixiApp || !pixiContainerRef.current) {
@@ -44,6 +76,10 @@ export const Scene = ({
 
     const canvasElement = pixiContainerRef.current
       .children[0] as HTMLCanvasElement
+
+    if (!canvasElement) {
+      return
+    }
 
     const containerWidth = pixiContainerRef.current.offsetWidth
     const scale =
@@ -54,7 +90,7 @@ export const Scene = ({
   }, [pixiApp, separatedImage])
 
   useEffect(() => {
-    if (!pixiApp) {
+    if (!pixiApp || !pixiApp.stage) {
       return
     }
 

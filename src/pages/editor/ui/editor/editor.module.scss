@@ -23,8 +23,9 @@
 }
 
 .interactionsBlock {
-  display: grid;
-  grid-gap: 8px;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {
@@ -40,6 +41,5 @@
 
   .interactionsBlock {
     width: 200px;
-    align-content: space-between;
   }
 }

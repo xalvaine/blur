@@ -1,0 +1,26 @@
+.title.title {
+  margin: 0 0 8px;
+}
+
+.segmented {
+  display: block;
+}
+
+.segment {
+  flex-grow: 1;
+}
+
+.modelSegment {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.modelName.modelName {
+  margin: 0;
+}
+
+.modelSize {
+  margin: 0;
+}
