@@ -6012,6 +6012,11 @@ idb@^7.0.1:
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.1.1.tgz#d910ded866d32c7ced9befc5bfdf36f572ced72b"
   integrity sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==
 
+idb@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-8.0.0.tgz#33d7ed894ed36e23bcb542fb701ad579bfaad41f"
+  integrity sha512-l//qvlAKGmQO31Qn7xdzagVPPaHTxXx199MhrAFuVBTPqydcPYBWjkrbv4Y0ktB+GmWOiwHl237UUOrLmQxLvw==
+
 identity-obj-proxy@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/identity-obj-proxy/-/identity-obj-proxy-3.0.0.tgz#94d2bda96084453ef36fbc5aaec37e0f79f1fc14"
@@ -7761,7 +7766,7 @@ onnxruntime-web@../onnxruntime/js/web:
     flatbuffers "^1.12.0"
     guid-typescript "^1.0.9"
     long "^5.2.3"
-    onnxruntime-common "file:../../Library/Caches/Yarn/v6/npm-onnxruntime-web-1.16.3-eb096035-4d16-4ddf-9f7f-28e2ad3cf7cf-1701596462219/node_modules/common"
+    onnxruntime-common "file:../../Library/Caches/Yarn/v6/npm-onnxruntime-web-1.16.3-968f0f80-b249-4817-b9f8-2ab8e435e68b-1701597074083/node_modules/common"
     platform "^1.3.6"
     protobufjs "^7.2.4"
 
