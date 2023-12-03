@@ -15,7 +15,6 @@ import {
   useEffect,
   useMemo,
 } from 'react'
-import classNames from 'classnames'
 
 import styles from './controls.module.scss'
 
@@ -92,7 +91,7 @@ export const Controls = ({
   }, [separatedImage, setSelectedFilter])
 
   return (
-    <div>
+    <div className={className}>
       <Typography.Title level={5} className={styles.title}>
         Размытие
       </Typography.Title>
@@ -100,7 +99,7 @@ export const Controls = ({
         disabled={!separatedImage}
         selectedKeys={[selectedFilter]}
         onSelect={handleSelectItem}
-        className={classNames(className, styles.menu)}
+        className={styles.menu}
         mode='vertical'
         items={menuItems}
       />

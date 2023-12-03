@@ -49,7 +49,12 @@ export const Actions = ({
       >
         Скачать
       </Button>
-      <Button block danger disabled={!separatedImage} onClick={handleClear}>
+      <Button
+        className={styles.cancel}
+        block
+        disabled={!separatedImage}
+        onClick={handleClear}
+      >
         Отменить
       </Button>
     </div>

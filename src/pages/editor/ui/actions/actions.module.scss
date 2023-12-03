@@ -1,6 +1,6 @@
 .wrapper {
   display: grid;
-  grid-gap: 8px;
+  grid-gap: 12px;
   align-content: start;
   margin-top: auto;
 }
@@ -8,5 +8,10 @@
 @media (min-width: 768px) {
   .wrapper {
     grid-gap: 12px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cancel {
+    order: -1;
   }
 }

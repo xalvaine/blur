@@ -55,6 +55,7 @@ export const Editor = () => {
       <div className={styles.interactionsBlock}>
         <ModelPicker modelType={modelType} setModelType={setModelType} />
         <Controls
+          className={styles.controls}
           setFilters={setFilters}
           separatedImage={imageData}
           selectedFilter={selectedFilter}

@@ -2,7 +2,7 @@
   padding: 16px;
   display: grid;
   align-content: start;
-  grid-gap: 8px;
+  grid-gap: 16px;
 }
 
 .imageBack {
@@ -24,22 +24,18 @@
 
 .interactionsBlock {
   display: flex;
-  gap: 8px;
+  gap: 16px;
   flex-direction: column;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .wrapper {
     grid-template-columns: 1fr auto;
-    max-width: 768px;
+    max-width: 1024px;
     margin: auto;
     grid-gap: 24px;
     padding: 24px;
-    height: 100dvh;
     align-content: center;
-  }
-
-  .interactionsBlock {
-    width: 200px;
+    height: 100dvh;
   }
 }
