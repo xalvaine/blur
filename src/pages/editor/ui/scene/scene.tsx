@@ -5,7 +5,14 @@ import React, {
   useEffect,
   useRef,
 } from 'react'
-import { Application, DisplayObject, ICanvas, Sprite } from 'pixi.js'
+import {
+  Application,
+  DisplayObject,
+  ENV,
+  ICanvas,
+  settings,
+  Sprite,
+} from 'pixi.js'
 
 import styles from './scene.module.scss'
 
@@ -52,6 +59,7 @@ export const Scene = ({
     if (!!pixiApp || !separatedImage) {
       return
     }
+    settings.PREFER_ENV = ENV.WEBGL2
     const app = new Application({
       backgroundAlpha: 0,
       width: separatedImage.width,

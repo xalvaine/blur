@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
-    "@pixi/react": "^7.1.1",
     "@xalvaine/pixi-filters": "../pixi-filters",
     "antd": "^5.9.2",
     "axios": "^1.6.2",
