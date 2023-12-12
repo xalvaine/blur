@@ -1,5 +1,5 @@
 import type { Cache, State } from 'swr'
-import { openDB,  } from 'idb'
+import { openDB } from 'idb'
 
 type Key = string
 
@@ -21,9 +21,20 @@ export const createCacheProvider = async ({
   storeName,
 }: CreateCacheProviderParams): Promise<() => Cache> => {
   const map = new Map<Key, State>()
-  const db = await openDB(dbName)
+  const db = await openDB(
+    dbName,
+    parseInt(process.env.REACT_DB_VERSION || `1`),
+    {
+      upgrade(database, oldVersion) {
+        if (oldVersion) {
+          database.deleteObjectStore(storeName)
+        }
+        database.createObjectStore(storeName)
+      },
+    },
+  )
 
-  let cursor = await db.transaction(storeName, 'readwrite').store.openCursor()
+  let cursor = await db.transaction(storeName, 'readwrite', {}).store.openCursor()
 
   while (cursor) {
     const key = cursor.key as Key
