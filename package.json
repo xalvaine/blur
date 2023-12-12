@@ -4,27 +4,15 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
-    "@pixi/filter-zoom-blur": "^5.1.1",
     "@pixi/react": "^7.1.1",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
-    "@types/ndarray": "^1.0.14",
-    "@types/node": "^16.7.13",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
+    "@xalvaine/pixi-filters": "../pixi-filters",
     "antd": "^5.9.2",
     "axios": "^1.6.2",
     "classnames": "^2.3.2",
-    "dtsgenerator": "^3.19.1",
     "idb": "^8.0.0",
     "ndarray": "^1.0.19",
     "onnxruntime-web": "../onnxruntime/js/web",
-    "pixi-filters": "^5.2.1",
     "pixi.js": "^7.3.2",
-    "prettier": "^3.0.3",
-    "raw-loader": "^4.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -38,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "tools:dtsgen": "./get-swagger-types.sh"
+    "tools:dtsgen": "./get-swagger-types.sh",
+    "delete": "rm -rf ./node_modules/.cache &&  yarn add pixi-zoom-blur@../pixi-zoom-blur && yarn start"
   },
   "resolutions": {
     "strip-ansi": "6.0.0"
@@ -62,6 +51,12 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/ndarray": "^1.0.14",
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "dtsgenerator": "^3.19.1",
+    "prettier": "^3.1.1"
   }
 }

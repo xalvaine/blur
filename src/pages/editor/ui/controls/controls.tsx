@@ -6,8 +6,12 @@ import {
   BorderVerticleOutlined,
   StarTwoTone,
 } from '@ant-design/icons'
-import { BlurFilter, Filter } from 'pixi.js'
-import { MotionBlurFilter, ZoomBlurFilter } from 'pixi-filters'
+import { Filter } from 'pixi.js'
+import {
+  HorizontalBlurFilter,
+  VerticalBlurFilter,
+  ZoomBlurFilter,
+} from '@xalvaine/pixi-filters'
 import {
   Dispatch,
   SetStateAction,
@@ -57,18 +61,25 @@ export const Controls = ({
   selectedFilter,
   setSelectedFilter,
 }: ControlsProps) => {
-  const keyToFilter = useMemo(() => {
+  const keyToFilters = useMemo(() => {
+    const radius = 16
+
     return {
-      [BlurTypes.None]: undefined,
-      [BlurTypes.Gaussian]: new BlurFilter(12, 10),
-      [BlurTypes.Vertical]: new MotionBlurFilter([0, 30], 25),
-      [BlurTypes.Horizontal]: new MotionBlurFilter([30, 0], 25),
-      [BlurTypes.Zoom]: new ZoomBlurFilter({
-        center: [separatedImage?.centerX || 0, separatedImage?.centerY || 0],
-        strength: 0.1,
-      }),
+      [BlurTypes.None]: [],
+      [BlurTypes.Gaussian]: [
+        new VerticalBlurFilter({ radius }),
+        new HorizontalBlurFilter({ radius }),
+      ],
+      [BlurTypes.Vertical]: [new VerticalBlurFilter({ radius })],
+      [BlurTypes.Horizontal]: [new HorizontalBlurFilter({ radius })],
+      [BlurTypes.Zoom]: [
+        new ZoomBlurFilter({
+          radius,
+          center: [separatedImage?.centerX || 0, separatedImage?.centerY || 0],
+        }),
+      ],
     }
-  }, [separatedImage])
+  }, [separatedImage?.centerX, separatedImage?.centerY])
 
   const handleSelectItem = useCallback<
     Exclude<MenuProps['onSelect'], undefined>
@@ -80,9 +91,9 @@ export const Controls = ({
   )
 
   useEffect(() => {
-    const filter = keyToFilter[selectedFilter]
-    setFilters(filter ? [filter] : [])
-  }, [keyToFilter, selectedFilter, setFilters])
+    const filters = keyToFilters[selectedFilter]
+    setFilters(filters)
+  }, [keyToFilters, selectedFilter, setFilters])
 
   useEffect(() => {
     if (!separatedImage) {
