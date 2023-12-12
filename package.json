@@ -26,8 +26,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "tools:dtsgen": "./get-swagger-types.sh",
-    "delete": "rm -rf ./node_modules/.cache &&  yarn add pixi-zoom-blur@../pixi-zoom-blur && yarn start"
+    "tools:dtsgen": "./get-swagger-types.sh"
   },
   "resolutions": {
     "strip-ansi": "6.0.0"

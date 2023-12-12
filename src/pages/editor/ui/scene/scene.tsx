@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react'
 import { Application, DisplayObject, ICanvas, Sprite } from 'pixi.js'
 
 import styles from './scene.module.scss'
@@ -52,6 +58,7 @@ export const Scene = ({
       height: separatedImage.height,
       autoDensity: false,
     })
+    app.ticker.stop()
     setPixiApp(app)
   }, [pixiApp, separatedImage, setPixiApp])
 
@@ -69,8 +76,8 @@ export const Scene = ({
     }
   }, [pixiApp, setPixiApp])
 
-  useEffect(() => {
-    if (!pixiApp || !pixiContainerRef.current) {
+  const scaleApp = useCallback(() => {
+    if (!pixiContainerRef.current) {
       return
     }
 
@@ -87,7 +94,19 @@ export const Scene = ({
 
     canvasElement.style.width = `${separatedImage.width * scale}px`
     canvasElement.style.height = `${separatedImage.height * scale}px`
-  }, [pixiApp, separatedImage])
+  }, [separatedImage.height, separatedImage.width])
+
+  useEffect(() => {
+    const pixiContainer = pixiContainerRef.current
+    if (!pixiApp || !pixiContainer) {
+      return
+    }
+
+    const resizeObserver = new ResizeObserver(scaleApp)
+    resizeObserver.observe(pixiContainer)
+
+    return () => void resizeObserver.disconnect()
+  }, [pixiApp, scaleApp])
 
   useEffect(() => {
     if (!pixiApp || !pixiApp.stage) {
@@ -98,6 +117,7 @@ export const Scene = ({
     for (const sprite of sprites) {
       pixiApp.stage.addChild(sprite as DisplayObject)
     }
+    pixiApp.render()
   }, [pixiApp, sprites])
 
   return <div className={styles.container} ref={pixiContainerRef} />
