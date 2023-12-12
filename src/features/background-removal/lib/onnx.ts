@@ -5,6 +5,7 @@ export async function runOnnxSession(
   model: ArrayBufferLike,
   input: NdArray<Float32Array>,
 ) {
+  ort.env.wasm.numThreads = navigator.hardwareConcurrency
   ort.env.wasm.proxy = true
 
   const ort_config: ort.InferenceSession.SessionOptions = {
