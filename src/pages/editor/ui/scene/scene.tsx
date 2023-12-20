@@ -31,9 +31,9 @@ export const Scene = ({
 }: SceneProps) => {
   const pixiContainerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  const handleRemoveContainerChildren = useCallback(() => {
     const pixiContainerElement = pixiContainerRef.current
-    if (!pixiApp || !pixiContainerElement) {
+    if (!pixiContainerElement) {
       return
     }
 
@@ -46,14 +46,20 @@ export const Scene = ({
         pixiContainerElement.children[childIndex],
       )
     }
+  }, [])
+
+  useEffect(() => {
+    const pixiContainerElement = pixiContainerRef.current
+    if (!pixiApp || !pixiContainerElement) {
+      return
+    }
 
     pixiContainerElement.appendChild(pixiApp.view as unknown as Node)
+
     return () => {
-      if (pixiContainerElement?.children[0]) {
-        pixiContainerElement?.removeChild(pixiContainerElement.children[0])
-      }
+      handleRemoveContainerChildren()
     }
-  }, [pixiApp])
+  }, [handleRemoveContainerChildren, pixiApp])
 
   useEffect(() => {
     if (!!pixiApp || !separatedImage) {
@@ -69,20 +75,6 @@ export const Scene = ({
     app.ticker.stop()
     setPixiApp(app)
   }, [pixiApp, separatedImage, setPixiApp])
-
-  useEffect(() => {
-    return () => {
-      pixiApp?.destroy()
-    }
-  }, [pixiApp])
-
-  useEffect(() => {
-    return () => {
-      if (pixiApp) {
-        setPixiApp(undefined)
-      }
-    }
-  }, [pixiApp, setPixiApp])
 
   const scaleApp = useCallback(() => {
     if (!pixiContainerRef.current) {
