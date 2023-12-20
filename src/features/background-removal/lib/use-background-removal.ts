@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { NdArray } from 'ndarray'
 
-import { ModelType, useModel } from './use-model'
+import { ModelType, modelTypeToData, useModel } from './use-model'
 import { decodeImage } from './decode-image'
 import { runInference } from './inference'
 import { encodeImage } from './encode-image'
@@ -10,6 +10,8 @@ interface UseBackgroundRemovalParams {
   image: File | undefined
   modelType: ModelType | undefined
 }
+
+const IMAGE_RESOLUTION = 1080
 
 export const useBackgroundRemoval = ({
   image,
@@ -25,20 +27,29 @@ export const useBackgroundRemoval = ({
   const [isImageProcessing, setIsImageProcessing] = useState(false)
   const [imageData, setImageData] = useState<Components.Schemas.Segmentation>()
 
-  const separateImage = useCallback(async (data: File, image: File) => {
-    const decodedImage = await decodeImage(image)
-    const { source, background, foreground, ...rest } = await runInference(
-      decodedImage as unknown as NdArray<Uint8Array>,
-      data,
-    )
+  const separateImage = useCallback(
+    async (data: File, image: File) => {
+      if (modelType === undefined) {
+        return
+      }
 
-    setImageData({
-      foreground: URL.createObjectURL(await encodeImage(foreground)),
-      background: URL.createObjectURL(await encodeImage(background)),
-      source: URL.createObjectURL(await encodeImage(source)),
-      ...rest,
-    })
-  }, [])
+      const decodedImage = await decodeImage(image)
+      const { source, background, foreground, ...rest } = await runInference(
+        decodedImage as unknown as NdArray<Uint8Array>,
+        data,
+        modelTypeToData[modelType],
+        IMAGE_RESOLUTION,
+      )
+
+      setImageData({
+        foreground: URL.createObjectURL(await encodeImage(foreground)),
+        background: URL.createObjectURL(await encodeImage(background)),
+        source: URL.createObjectURL(await encodeImage(source)),
+        ...rest,
+      })
+    },
+    [modelType],
+  )
 
   useEffect(() => {
     setImageData(undefined)

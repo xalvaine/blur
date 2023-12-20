@@ -1,10 +1,12 @@
-import ndarray, { NdArray } from 'ndarray'
+import ndarray, { Data, NdArray } from 'ndarray'
 
-export const resizeTensorImage = async (
-  imageTensor: NdArray<Uint8Array>,
+export const resizeTensorImage = <T extends Data = Data<number>>(
+  imageTensor: NdArray<T>,
   newWidth: number,
   newHeight: number,
-): Promise<NdArray<Uint8Array>> => {
+  arrayConstructCallback: (length: number) => T,
+  roundValues: boolean = true,
+): NdArray<T> => {
   const [srcHeight, srcWidth, srcChannels] = imageTensor.shape
   // Calculate the scaling factors
   const scaleX = srcWidth / newWidth
@@ -12,23 +14,24 @@ export const resizeTensorImage = async (
 
   // Create a new NdArray to store the resized image
   const resizedImageData = ndarray(
-    new Uint8Array(srcChannels * newWidth * newHeight),
+    arrayConstructCallback(srcChannels * newWidth * newHeight),
     [newHeight, newWidth, srcChannels],
   )
+  let nanLogged = false
   // Perform interpolation to fill the resized NdArray
   for (let y = 0; y < newHeight; y++) {
     for (let x = 0; x < newWidth; x++) {
+      const srcX = x * scaleX
+      const srcY = y * scaleY
+      const x1 = Math.max(Math.floor(srcX), 0)
+      const x2 = Math.min(Math.ceil(srcX), srcWidth - 1)
+      const y1 = Math.max(Math.floor(srcY), 0)
+      const y2 = Math.min(Math.ceil(srcY), srcHeight - 1)
+
+      const dx = srcX - x1
+      const dy = srcY - y1
+
       for (let c = 0; c < srcChannels; c++) {
-        const srcX = x * scaleX
-        const srcY = y * scaleY
-        const x1 = Math.floor(srcX)
-        const x2 = Math.ceil(srcX)
-        const y1 = Math.floor(srcY)
-        const y2 = Math.ceil(srcY)
-
-        const dx = srcX - x1
-        const dy = srcY - y1
-
         const p1 = imageTensor.get(y1, x1, c)
         const p2 = imageTensor.get(y1, x2, c)
         const p3 = imageTensor.get(y2, x1, c)
@@ -41,7 +44,12 @@ export const resizeTensorImage = async (
           (1 - dx) * dy * p3 +
           dx * dy * p4
 
-        resizedImageData.set(y, x, c, Math.round(interpolatedValue))
+        resizedImageData.set(
+          y,
+          x,
+          c,
+          roundValues ? Math.round(interpolatedValue) : interpolatedValue,
+        )
       }
     }
   }

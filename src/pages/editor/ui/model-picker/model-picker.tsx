@@ -22,18 +22,18 @@ const Segment = ({ label, size }: SegmentProps) => {
 
 const options: SegmentedProps['options'] = [
   {
-    label: <Segment label='Быстрое' size='42 МБ' />,
-    value: ModelType.Small,
+    label: <Segment label='U2netP' size='5 МБ' />,
+    value: ModelType.U2netP,
     className: styles.segment,
   },
   {
     label: <Segment label='Среднее' size='84 МБ' />,
-    value: ModelType.Medium,
+    value: ModelType.Isnet,
     className: styles.segment,
   },
   {
-    label: <Segment label='Качественное' size='168 МБ' />,
-    value: ModelType.Large,
+    label: <Segment label='Silueta' size='42 МБ' />,
+    value: ModelType.Quant,
     className: styles.segment,
   },
 ]
@@ -49,12 +49,14 @@ export const ModelPicker = ({ modelType, setModelType }: ModelPickerProps) => {
       <Typography.Title level={5} className={styles.title}>
         Выделение фона
       </Typography.Title>
+      <div className={styles.scrollWrapper}>
       <Segmented
         value={modelType}
         onChange={setModelType as (value: unknown) => void}
         className={styles.segmented}
         options={options}
       />
+      </div>
     </div>
   )
 }

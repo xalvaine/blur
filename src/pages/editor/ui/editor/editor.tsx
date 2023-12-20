@@ -24,7 +24,7 @@ export const Editor = () => {
     BlurTypes.None,
   )
   const [filters, setFilters] = useState<Filter[]>([])
-  const [modelType, setModelType] = useState<ModelType>(ModelType.Small)
+  const [modelType, setModelType] = useState<ModelType>(ModelType.U2netP)
   const { imageData, isImageProcessing, modelLoadingProgress, isModelLoading } =
     useBackgroundRemoval({ image: imageSource, modelType })
   useLoadSprites({ setSprites, pixiApp, separatedImage: imageData })
