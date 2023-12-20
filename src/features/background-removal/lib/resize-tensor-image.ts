@@ -8,17 +8,14 @@ export const resizeTensorImage = <T extends Data = Data<number>>(
   roundValues: boolean = true,
 ): NdArray<T> => {
   const [srcHeight, srcWidth, srcChannels] = imageTensor.shape
-  // Calculate the scaling factors
   const scaleX = srcWidth / newWidth
   const scaleY = srcHeight / newHeight
 
-  // Create a new NdArray to store the resized image
   const resizedImageData = ndarray(
     arrayConstructCallback(srcChannels * newWidth * newHeight),
     [newHeight, newWidth, srcChannels],
   )
-  let nanLogged = false
-  // Perform interpolation to fill the resized NdArray
+
   for (let y = 0; y < newHeight; y++) {
     for (let x = 0; x < newWidth; x++) {
       const srcX = x * scaleX
@@ -37,7 +34,7 @@ export const resizeTensorImage = <T extends Data = Data<number>>(
         const p3 = imageTensor.get(y2, x1, c)
         const p4 = imageTensor.get(y2, x2, c)
 
-        // Perform bilinear interpolation
+        // Bilinear interpolation
         const interpolatedValue =
           (1 - dx) * (1 - dy) * p1 +
           dx * (1 - dy) * p2 +
