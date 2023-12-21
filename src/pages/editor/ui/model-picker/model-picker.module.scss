@@ -2,7 +2,7 @@
   margin: 0 0 12px;
 }
 
-.segmented {
+.select {
   display: block;
 }
 
@@ -10,11 +10,9 @@
   flex-grow: 1;
 }
 
-.modelSegment {
+.modelOption {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 4px 0;
+  justify-content: space-between;
 }
 
 .modelName.modelName {
@@ -28,4 +26,10 @@
 .scrollWrapper {
   width: 100%;
   overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .additionalLabel {
+    display: none;
+  }
 }

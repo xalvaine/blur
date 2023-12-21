@@ -1,4 +1,4 @@
-import { Segmented, SegmentedProps, Typography } from 'antd'
+import { Select, SelectProps, Typography } from 'antd'
 import { Dispatch, SetStateAction } from 'react'
 
 import { ModelType } from 'features/background-removal/lib'
@@ -7,12 +7,18 @@ import styles from './model-picker.module.scss'
 
 interface SegmentProps {
   label: string
+  additionalLabel?: string
   size: string
 }
-const Segment = ({ label, size }: SegmentProps) => {
+const Segment = ({ label, size, additionalLabel }: SegmentProps) => {
   return (
-    <div className={styles.modelSegment}>
-      <Typography.Text className={styles.modelName}>{label}</Typography.Text>
+    <div className={styles.modelOption}>
+      <Typography.Text className={styles.modelName}>
+        {label}
+        {additionalLabel && (
+          <span className={styles.additionalLabel}> - {additionalLabel}</span>
+        )}
+      </Typography.Text>
       <Typography.Text className={styles.modelSize} type='secondary'>
         {size}
       </Typography.Text>
@@ -20,9 +26,9 @@ const Segment = ({ label, size }: SegmentProps) => {
   )
 }
 
-const options: SegmentedProps['options'] = [
+const options: SelectProps['options'] = [
   {
-    label: <Segment label='Низкое' size='5 МБ' />,
+    label: <Segment label='Низкое' size='5 МБ' additionalLabel='быстрее' />,
     value: ModelType.U2netP,
     className: styles.segment,
   },
@@ -32,7 +38,7 @@ const options: SegmentedProps['options'] = [
     className: styles.segment,
   },
   {
-    label: <Segment label='Высокое' size='84 МБ' />,
+    label: <Segment label='Высокое' size='84 МБ' additionalLabel='медленнее' />,
     value: ModelType.Isnet,
     className: styles.segment,
   },
@@ -50,12 +56,12 @@ export const ModelPicker = ({ modelType, setModelType }: ModelPickerProps) => {
         Качество выделения фона
       </Typography.Title>
       <div className={styles.scrollWrapper}>
-      <Segmented
-        value={modelType}
-        onChange={setModelType as (value: unknown) => void}
-        className={styles.segmented}
-        options={options}
-      />
+        <Select
+          className={styles.select}
+          value={modelType}
+          onChange={setModelType as (value: unknown) => void}
+          options={options}
+        />
       </div>
     </div>
   )
