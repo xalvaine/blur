@@ -18,10 +18,14 @@ export const encodeImage = async (
         width,
         height,
       )
-      const canvas = new OffscreenCanvas(imageData.width, imageData.height)
+      const canvas = document.createElement(`canvas`)
+      canvas.width = width
+      canvas.height = height
       const ctx = canvas.getContext(`2d`)!
       ctx.putImageData(imageData, 0, 0)
-      return canvas.convertToBlob({ quality, type: format })
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob!), format, quality)
+      })
     default:
       throw new Error(`Invalid format: ${format}`)
   }

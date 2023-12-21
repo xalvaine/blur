@@ -1,7 +1,9 @@
 import ndarray from 'ndarray'
 
 const imageBitmapToImageData = (imageBitmap: ImageBitmap): ImageData => {
-  const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height)
+  const canvas = document.createElement(`canvas`)
+  canvas.width = imageBitmap.width
+  canvas.height = imageBitmap.height
   const ctx = canvas.getContext(`2d`)!
   ctx.drawImage(imageBitmap, 0, 0)
   return ctx.getImageData(0, 0, canvas.width, canvas.height)

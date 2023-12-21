@@ -77,7 +77,7 @@ export const Scene = ({
   }, [pixiApp, separatedImage, setPixiApp])
 
   const scaleApp = useCallback(() => {
-    if (!pixiContainerRef.current) {
+    if (!pixiContainerRef.current || !pixiApp) {
       return
     }
 
@@ -92,9 +92,10 @@ export const Scene = ({
     const scale =
       containerWidth / Math.max(separatedImage.width, separatedImage.height)
 
+    pixiApp.renderer.resize(separatedImage.width, separatedImage.height)
     canvasElement.style.width = `${separatedImage.width * scale}px`
     canvasElement.style.height = `${separatedImage.height * scale}px`
-  }, [separatedImage.height, separatedImage.width])
+  }, [pixiApp, separatedImage.height, separatedImage.width])
 
   useEffect(() => {
     const pixiContainer = pixiContainerRef.current

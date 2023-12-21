@@ -5,12 +5,18 @@
 }
 
 :root {
+  --primary-color: #7c50f3;
+}
+
+:root {
+  --background-primary-color: #ffffff;
   --background-secondary-color: #f5f5f5;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-secondary-color: #1f1f1f;
+    --background-primary-color: #1f1f1f;
+    --background-secondary-color: #000000;
   }
 }
 

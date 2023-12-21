@@ -28,14 +28,24 @@
   flex-direction: column;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .wrapper {
     grid-template-columns: 1fr auto;
-    max-width: 1024px;
+    width: 768px;
     margin: auto;
     grid-gap: 24px;
     padding: 24px;
     align-content: center;
-    height: 100dvh;
+  }
+}
+
+@media (min-width: 1440px) {
+  .wrapper {
+    grid-template-columns: 1fr auto;
+    width: 1024px;
+    margin: auto;
+    grid-gap: 24px;
+    padding: 24px;
+    align-content: center;
   }
 }

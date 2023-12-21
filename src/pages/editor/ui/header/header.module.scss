@@ -1,0 +1,57 @@
+.header {
+  position: sticky;
+  z-index: 5;
+  top: 0;
+  height: 64px;
+  background: rgb(255, 255, 255, 0.9);
+  backdrop-filter: blur(25px);
+
+  @media (prefers-color-scheme: dark) {
+    background: rgb(20, 20, 20, 0.9);
+  }
+}
+
+.wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin: auto;
+}
+
+.image {
+  height: 100%;
+  position: relative;
+  top: -2px;
+}
+
+.buttons {
+  margin-right: -8px;
+  display: flex;
+  gap: 4px;
+
+  :global(.ant-btn):not(:disabled) {
+    color: var(--primary-color);
+  }
+
+  :global(.ant-btn.ant-btn-lg .anticon) {
+    font-size: 24px;
+  }
+}
+
+.moreButton {
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    width: 768px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .wrapper {
+    width: 1024px;
+  }
+}

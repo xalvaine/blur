@@ -9,8 +9,8 @@ import {
 import { Scene } from '../scene'
 import { Upload } from '../upload'
 import { BlurTypes, Controls } from '../controls'
-import { Actions } from '../actions'
 import { ModelPicker } from '../model-picker'
+import { Header } from '../header'
 import { useLoadSprites } from '../../lib/use-load-sprites'
 import { useApplyBackgroundFilters } from '../../lib/use-apply-background-filters'
 
@@ -31,42 +31,44 @@ export const Editor = () => {
   useApplyBackgroundFilters({ pixiApp, filters, setSprites })
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.imageBack}>
-        <div className={styles.image}>
-          {imageData ? (
-            <Scene
-              pixiApp={pixiApp}
-              setPixiApp={setPixiApp}
-              sprites={sprites}
-              separatedImage={imageData}
-            />
-          ) : (
-            <Upload
-              onUpload={setImageSource}
-              isImageProcessing={isImageProcessing}
-              isModelLoading={isModelLoading}
-              separateImageError={false}
-              loadingProgress={modelLoadingProgress}
-            />
-          )}
+    <>
+      <Header
+        setImageSource={setImageSource}
+        pixiApp={pixiApp}
+        separatedImage={imageData}
+      />
+      <div className={styles.wrapper}>
+        <div className={styles.imageBack}>
+          <div className={styles.image}>
+            {imageData ? (
+              <Scene
+                pixiApp={pixiApp}
+                setPixiApp={setPixiApp}
+                sprites={sprites}
+                separatedImage={imageData}
+              />
+            ) : (
+              <Upload
+                onUpload={setImageSource}
+                isImageProcessing={isImageProcessing}
+                isModelLoading={isModelLoading}
+                separateImageError={false}
+                loadingProgress={modelLoadingProgress}
+              />
+            )}
+          </div>
+        </div>
+        <div className={styles.interactionsBlock}>
+          <ModelPicker modelType={modelType} setModelType={setModelType} />
+          <Controls
+            className={styles.controls}
+            setFilters={setFilters}
+            separatedImage={imageData}
+            selectedFilter={selectedFilter}
+            setSelectedFilter={setSelectedFilter}
+          />
         </div>
       </div>
-      <div className={styles.interactionsBlock}>
-        <ModelPicker modelType={modelType} setModelType={setModelType} />
-        <Controls
-          className={styles.controls}
-          setFilters={setFilters}
-          separatedImage={imageData}
-          selectedFilter={selectedFilter}
-          setSelectedFilter={setSelectedFilter}
-        />
-        <Actions
-          setImageSource={setImageSource}
-          pixiApp={pixiApp}
-          separatedImage={imageData}
-        />
-      </div>
-    </div>
+    </>
   )
 }
