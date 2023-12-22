@@ -1,7 +1,8 @@
 import { Select, SelectProps, Typography } from 'antd'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useMemo } from 'react'
 
 import { ModelType } from 'features/background-removal/lib'
+import { isIOS } from 'shared/lib'
 
 import styles from './model-picker.module.scss'
 
@@ -26,30 +27,44 @@ const Segment = ({ label, size, additionalLabel }: SegmentProps) => {
   )
 }
 
-const options: SelectProps['options'] = [
-  {
-    label: <Segment label='Низкое' size='5 МБ' additionalLabel='быстрее' />,
-    value: ModelType.U2netP,
-    className: styles.segment,
-  },
-  {
-    label: <Segment label='Среднее' size='42 МБ' />,
-    value: ModelType.Quant,
-    className: styles.segment,
-  },
-  {
-    label: <Segment label='Высокое' size='84 МБ' additionalLabel='медленнее' />,
-    value: ModelType.Isnet,
-    className: styles.segment,
-  },
-]
-
 interface ModelPickerProps {
+  disabled?: boolean
   modelType: ModelType
   setModelType: Dispatch<SetStateAction<ModelType>>
 }
 
-export const ModelPicker = ({ modelType, setModelType }: ModelPickerProps) => {
+export const ModelPicker = ({
+  modelType,
+  setModelType,
+  disabled,
+}: ModelPickerProps) => {
+  const options = useMemo(() => {
+    const options: SelectProps['options'] = [
+      {
+        label: <Segment label='Низкое' size='5 МБ' additionalLabel='быстрее' />,
+        value: ModelType.U2netP,
+        className: styles.segment,
+      },
+      {
+        label: <Segment label='Среднее' size='42 МБ' />,
+        value: ModelType.Quant,
+        className: styles.segment,
+      },
+    ]
+
+    if (!isIOS()) {
+      options.push({
+        label: (
+          <Segment label='Высокое' size='84 МБ' additionalLabel='медленнее' />
+        ),
+        value: ModelType.Isnet,
+        className: styles.segment,
+      })
+    }
+
+    return options
+  }, [])
+
   return (
     <div>
       <Typography.Title level={5} className={styles.title}>
@@ -57,6 +72,7 @@ export const ModelPicker = ({ modelType, setModelType }: ModelPickerProps) => {
       </Typography.Title>
       <div className={styles.scrollWrapper}>
         <Select
+          disabled={disabled}
           className={styles.select}
           value={modelType}
           onChange={setModelType as (value: unknown) => void}

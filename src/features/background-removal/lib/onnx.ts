@@ -1,6 +1,8 @@
 import ndarray, { NdArray } from 'ndarray'
 import * as ort from 'onnxruntime-web'
 
+import { isSafari } from 'shared/lib'
+
 export async function runOnnxSession(
   model: ArrayBufferLike,
   input: NdArray<Float32Array>,
@@ -8,7 +10,7 @@ export async function runOnnxSession(
   outputKey: string,
   providers: string[],
 ) {
-  ort.env.wasm.numThreads = navigator.hardwareConcurrency
+  ort.env.wasm.numThreads = isSafari() ? 1 : navigator.hardwareConcurrency // https://github.com/microsoft/onnxruntime/issues/11567
   ort.env.wasm.proxy = true
 
   const ort_config: ort.InferenceSession.SessionOptions = {
