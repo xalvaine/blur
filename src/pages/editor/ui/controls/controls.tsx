@@ -16,12 +16,15 @@ import {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 
 import styles from './controls.module.scss'
+import { animateIntegerTransition } from 'pages/editor/lib/animate-integer-transition'
 
 export enum BlurTypes {
   None = `none`,
@@ -99,8 +102,9 @@ const getFilters = (
 }
 
 const BLUR_RADIUS_DEFAULT = 16
-const BLUR_RADIUS_MIN = 1
+const BLUR_RADIUS_MIN = 0
 const BLUR_RADIUS_MAX = 50
+const BLUR_ANIMATION_DURATION = 300
 
 export const Controls = ({
   className,
@@ -110,6 +114,9 @@ export const Controls = ({
   setSelectedFilter,
 }: ControlsProps) => {
   const [radius, setRadius] = useState(BLUR_RADIUS_DEFAULT)
+  const [sliderValue, setSliderValue] = useState(BLUR_RADIUS_DEFAULT)
+  const targetRadiusRef = useRef(BLUR_RADIUS_DEFAULT)
+  const [isTransitioningBlur, setIsTransitioningBlur] = useState(false)
 
   useEffect(() => {
     setFilters(
@@ -131,17 +138,56 @@ export const Controls = ({
     [selectedFilter],
   )
 
+  const handleSelectFilter: Exclude<SelectProps['onSelect'], undefined> =
+    useCallback(
+      (value) => {
+        setIsTransitioningBlur(true)
+        targetRadiusRef.current = radius
+        animateIntegerTransition(
+          radius,
+          0,
+          BLUR_ANIMATION_DURATION,
+          setRadius,
+        ).then(() => {
+          setSelectedFilter(value)
+          setIsTransitioningBlur(false)
+        })
+      },
+      [radius, setSelectedFilter],
+    )
+
+  useEffect(() => {
+    setIsTransitioningBlur(true)
+
+    if (![BlurTypes.None].includes(selectedFilter)) {
+      animateIntegerTransition(
+        0,
+        targetRadiusRef.current,
+        BLUR_ANIMATION_DURATION,
+        setRadius,
+      ).then(() => {
+        setIsTransitioningBlur(false)
+      })
+    }
+  }, [selectedFilter])
+
+  useEffect(() => {
+    setRadius(sliderValue)
+  }, [sliderValue])
+
+  console.count(`render`)
+
   return (
     <div className={className}>
       <Typography.Title level={5} className={styles.title}>
         Радиус размытия
       </Typography.Title>
       <Slider
-        disabled={!separatedImage || !isRadiusControlAvailable}
+        disabled={!separatedImage || !isRadiusControlAvailable || isTransitioningBlur}
         min={BLUR_RADIUS_MIN}
         max={BLUR_RADIUS_MAX}
-        value={radius}
-        onChange={setRadius}
+        value={sliderValue}
+        onChange={setSliderValue}
       />
       <Typography.Title level={5} className={styles.title}>
         Размытие
@@ -149,7 +195,7 @@ export const Controls = ({
       <Select
         disabled={!separatedImage}
         value={selectedFilter}
-        onSelect={setSelectedFilter}
+        onSelect={handleSelectFilter}
         className={styles.menu}
         options={menuItems}
       />
