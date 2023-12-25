@@ -1,14 +1,24 @@
 .wrapper {
-  padding: 16px;
+  position: relative;
   display: grid;
   align-content: start;
-  grid-gap: 16px;
+  grid-gap: var(--padding-small);
+  border-radius: var(--border-radius);
+  overflow-y: scroll;
+  overscroll-behavior-y: none;
+  height: calc(100dvh - var(--header-height));
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .imageBack {
+  position: sticky;
+  top: 0;
   height: 0;
   padding-bottom: 100%;
-  position: relative;
 }
 
 .image {
@@ -17,25 +27,45 @@
   height: 100%;
 }
 
-.imageContainer {
-  padding: 16px;
-  display: flex;
-}
-
 .interactionsBlock {
   display: flex;
-  gap: 16px;
+  gap: 24px;
   flex-direction: column;
+  position: sticky;
+  top: 0;
+  padding: 24px;
+  background: var(--background-secondary-color);
+  pointer-events: all;
+  border-radius: 8px 8px 0 0;
+  height: fit-content;
 }
 
 @media (min-width: 768px) {
   .wrapper {
     grid-template-columns: 1fr auto;
     width: 768px;
+    height: auto;
     margin: auto;
-    grid-gap: 24px;
-    padding: 24px;
+    grid-gap: var(--padding);
+    padding: 0 var(--padding);
     align-content: center;
+  }
+
+  .imageBackWrapper {
+    padding: 0;
+  }
+
+  .interactionsWrapper {
+    position: static;
+    height: auto;
+  }
+
+  .imageGap {
+    display: none;
+  }
+
+  .interactionsBlock {
+    border-radius: 8px;
   }
 }
 
@@ -45,7 +75,6 @@
     width: 1024px;
     margin: auto;
     grid-gap: 24px;
-    padding: 24px;
     align-content: center;
   }
 }

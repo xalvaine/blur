@@ -78,7 +78,6 @@ export const Upload = ({
           />
           <Button
             block
-            type='dashed'
             onClick={handleButtonClick}
             className={styles.button}
             icon={<UploadOutlined />}

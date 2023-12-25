@@ -70,15 +70,13 @@ export const ModelPicker = ({
       <Typography.Title level={5} className={styles.title}>
         Качество выделения фона
       </Typography.Title>
-      <div className={styles.scrollWrapper}>
-        <Select
-          disabled={disabled}
-          className={styles.select}
-          value={modelType}
-          onChange={setModelType as (value: unknown) => void}
-          options={options}
-        />
-      </div>
+      <Select
+        disabled={disabled}
+        className={styles.select}
+        value={modelType}
+        onChange={setModelType as (value: unknown) => void}
+        options={options}
+      />
     </div>
   )
 }

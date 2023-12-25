@@ -6,7 +6,7 @@ export const convertTensorHWCtoBCHW = (
   std: number[] = [256, 256, 256],
 ): NdArray<Float32Array> => {
   const imageBufferData = imageTensor.data
-  const [srcHeight, srcWidth, srcChannels] = imageTensor.shape
+  const [srcHeight, srcWidth] = imageTensor.shape
   const stride = srcHeight * srcWidth
   const float32Data = new Float32Array(3 * stride)
 

@@ -59,17 +59,17 @@ export const Editor = () => {
           </div>
         </div>
         <div className={styles.interactionsBlock}>
-          <ModelPicker
-            disabled={isImageProcessing}
-            modelType={modelType}
-            setModelType={setModelType}
-          />
           <Controls
             className={styles.controls}
             setFilters={setFilters}
             separatedImage={imageData}
             selectedFilter={selectedFilter}
             setSelectedFilter={setSelectedFilter}
+          />
+          <ModelPicker
+            disabled={isImageProcessing}
+            modelType={modelType}
+            setModelType={setModelType}
           />
         </div>
       </div>

@@ -4,9 +4,11 @@
   :global(.ant-menu-item) {
     margin-left: 0;
     margin-right: 0;
+    padding-inline: 12px;
+    width: 100%;
   }
 }
 
 .title.title {
-  margin: 0 0 8px;
+  margin: 0 0 12px;
 }

@@ -34,6 +34,9 @@ export const App = () => {
         algorithm: isDark ? theme.darkAlgorithm : undefined,
         token: {
           colorPrimary: `#7C50F3`,
+          fontSize: 16,
+          sizeUnit: 6,
+          controlHeight: 48,
         },
       }}
     >
