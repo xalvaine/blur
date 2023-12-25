@@ -1,11 +1,10 @@
 import {
   CloseOutlined,
   DownloadOutlined,
-  MoreOutlined,
   ShareAltOutlined,
 } from '@ant-design/icons'
-import { Button, Dropdown, DropdownProps, Typography } from 'antd'
-import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
+import { Button } from 'antd'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 import { Application, DisplayObject, ICanvas } from 'pixi.js'
 
 import logo from './logo.png'
@@ -27,19 +26,6 @@ export const Header = ({
   const handleClear = useCallback(() => {
     setImageSource(undefined)
   }, [setImageSource])
-
-  const menu = useMemo<DropdownProps['menu']>(() => {
-    return {
-      items: [
-        {
-          key: 'clear',
-          icon: <CloseOutlined />,
-          label: <Typography.Text>Очистить сцену</Typography.Text>,
-          onClick: handleClear,
-        },
-      ],
-    }
-  }, [handleClear])
 
   const handleDownload = useCallback(async () => {
     if (!pixiApp) {
@@ -74,15 +60,17 @@ export const Header = ({
       return
     }
 
-    const file = new File([blob], getFileName())
+    const file = new File([blob], getFileName(), { type: blob.type })
 
-    return navigator.share({ files: [file] })
+    return navigator.share({
+      files: [file],
+    })
   }
 
   return (
     <header className={styles.header}>
       <div className={styles.wrapper}>
-        <img className={styles.image} src={logo} alt={'Logo'} />
+        <img className={styles.image} src={logo} alt={'Логотип'} />
         <div className={styles.buttons}>
           <Button
             disabled={!separatedImage}
@@ -100,9 +88,13 @@ export const Header = ({
               onClick={handleShare}
             />
           )}
-          <Dropdown disabled={!separatedImage} trigger={[`click`]} menu={menu}>
-            <Button type='text' shape='circle' icon={<MoreOutlined />} />
-          </Dropdown>
+          <Button
+            disabled={!separatedImage}
+            type='text'
+            shape='circle'
+            icon={<CloseOutlined />}
+            onClick={handleClear}
+          />
         </div>
       </div>
     </header>
