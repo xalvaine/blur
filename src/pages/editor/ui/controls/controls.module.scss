@@ -1,14 +1,17 @@
 .menu.menu.menu {
   border-inline-end: unset;
-
-  :global(.ant-menu-item) {
-    margin-left: 0;
-    margin-right: 0;
-    padding-inline: 12px;
-    width: 100%;
-  }
+  width: 100%;
 }
 
 .title.title {
-  margin: 0 0 12px;
+  margin: 0 0 16px;
+}
+
+.title.title:not(:first-child) {
+  margin-top: 24px;
+}
+
+.option {
+  display: flex;
+  gap: 12px;
 }

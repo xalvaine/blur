@@ -1,4 +1,4 @@
-import { Menu, MenuProps, Typography } from 'antd'
+import { Select, SelectProps, Slider, Typography } from 'antd'
 import {
   BorderHorizontalOutlined,
   BorderInnerOutlined,
@@ -14,10 +14,11 @@ import {
 } from '@xalvaine/pixi-filters'
 import {
   Dispatch,
+  ReactNode,
   SetStateAction,
-  useCallback,
   useEffect,
   useMemo,
+  useState,
 } from 'react'
 
 import styles from './controls.module.scss'
@@ -30,20 +31,41 @@ export enum BlurTypes {
   Zoom = `zoom`,
 }
 
-const menuItems: MenuProps['items'] = [
-  { key: BlurTypes.None, icon: <BorderOutlined />, label: `Без размытия` },
-  { key: BlurTypes.Gaussian, icon: <BorderInnerOutlined />, label: `Обычное` },
+interface OptionProps {
+  icon: ReactNode
+  label: string
+}
+
+const Option = ({ icon, label }: OptionProps) => {
+  return (
+    <div className={styles.option}>
+      {icon}
+      {label}
+    </div>
+  )
+}
+
+const menuItems: SelectProps['options'] = [
   {
-    key: BlurTypes.Vertical,
-    icon: <BorderHorizontalOutlined />,
-    label: `Вертикальное`,
+    value: BlurTypes.None,
+    label: <Option icon={<BorderOutlined />} label='Без размытия' />,
   },
   {
-    key: BlurTypes.Horizontal,
-    icon: <BorderVerticleOutlined />,
-    label: `Горизонтальное`,
+    value: BlurTypes.Gaussian,
+    label: <Option icon={<BorderInnerOutlined />} label='Обычное' />,
   },
-  { key: BlurTypes.Zoom, icon: <StarTwoTone />, label: `Zoom` },
+  {
+    value: BlurTypes.Vertical,
+    label: <Option icon={<BorderHorizontalOutlined />} label='Вертикальное' />,
+  },
+  {
+    value: BlurTypes.Horizontal,
+    label: <Option icon={<BorderVerticleOutlined />} label='Горизонтальное' />,
+  },
+  {
+    value: BlurTypes.Zoom,
+    label: <Option icon={<StarTwoTone />} label='Zoom' />,
+  },
 ]
 
 interface ControlsProps {
@@ -54,6 +76,32 @@ interface ControlsProps {
   setSelectedFilter: Dispatch<SetStateAction<BlurTypes>>
 }
 
+const getFilters = (
+  blurTypes: BlurTypes,
+  radius: number,
+  center: [number, number],
+) => {
+  return {
+    [BlurTypes.None]: [],
+    [BlurTypes.Gaussian]: [
+      new VerticalBlurFilter({ radius }),
+      new HorizontalBlurFilter({ radius }),
+    ],
+    [BlurTypes.Vertical]: [new VerticalBlurFilter({ radius })],
+    [BlurTypes.Horizontal]: [new HorizontalBlurFilter({ radius })],
+    [BlurTypes.Zoom]: [
+      new ZoomBlurFilter({
+        radius,
+        center,
+      }),
+    ],
+  }[blurTypes]
+}
+
+const BLUR_RADIUS_DEFAULT = 16
+const BLUR_RADIUS_MIN = 1
+const BLUR_RADIUS_MAX = 50
+
 export const Controls = ({
   className,
   setFilters,
@@ -61,59 +109,54 @@ export const Controls = ({
   selectedFilter,
   setSelectedFilter,
 }: ControlsProps) => {
-  const keyToFilters = useMemo(() => {
-    const radius = 16
+  const [radius, setRadius] = useState(BLUR_RADIUS_DEFAULT)
 
-    return {
-      [BlurTypes.None]: [],
-      [BlurTypes.Gaussian]: [
-        new VerticalBlurFilter({ radius }),
-        new HorizontalBlurFilter({ radius }),
-      ],
-      [BlurTypes.Vertical]: [new VerticalBlurFilter({ radius })],
-      [BlurTypes.Horizontal]: [new HorizontalBlurFilter({ radius })],
-      [BlurTypes.Zoom]: [
-        new ZoomBlurFilter({
-          radius,
-          center: [separatedImage?.centerX || 0, separatedImage?.centerY || 0],
-        }),
-      ],
-    }
-  }, [separatedImage?.centerX, separatedImage?.centerY])
+  useEffect(() => {
+    setFilters(
+      getFilters(selectedFilter, radius, [
+        separatedImage?.centerX || 0,
+        separatedImage?.centerY || 0,
+      ]),
+    )
+  }, [radius, selectedFilter, separatedImage, setFilters])
 
-  const handleSelectItem = useCallback<
-    Exclude<MenuProps['onSelect'], undefined>
-  >(
-    (event) => {
-      setSelectedFilter(event.key as BlurTypes)
-    },
-    [setSelectedFilter],
+  const showRadiusControl = useMemo(
+    () =>
+      [
+        BlurTypes.Vertical,
+        BlurTypes.Horizontal,
+        BlurTypes.Gaussian,
+        BlurTypes.Zoom,
+      ].includes(selectedFilter),
+    [selectedFilter],
   )
-
-  useEffect(() => {
-    const filters = keyToFilters[selectedFilter]
-    setFilters(filters)
-  }, [keyToFilters, selectedFilter, setFilters])
-
-  useEffect(() => {
-    if (!separatedImage) {
-      setSelectedFilter(BlurTypes.None)
-    }
-  }, [separatedImage, setSelectedFilter])
 
   return (
     <div className={className}>
       <Typography.Title level={5} className={styles.title}>
         Размытие
       </Typography.Title>
-      <Menu
+      <Select
         disabled={!separatedImage}
-        selectedKeys={[selectedFilter]}
-        onSelect={handleSelectItem}
+        value={selectedFilter}
+        onSelect={setSelectedFilter}
         className={styles.menu}
-        mode='vertical'
-        items={menuItems}
+        options={menuItems}
       />
+      {showRadiusControl && (
+        <>
+          <Typography.Title level={5} className={styles.title}>
+            Радиус размытия
+          </Typography.Title>
+          <Slider
+            disabled={!separatedImage}
+            min={BLUR_RADIUS_MIN}
+            max={BLUR_RADIUS_MAX}
+            value={radius}
+            onChange={setRadius}
+          />
+        </>
+      )}
     </div>
   )
 }

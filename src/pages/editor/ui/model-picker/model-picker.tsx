@@ -43,12 +43,10 @@ export const ModelPicker = ({
       {
         label: <Segment label='Низкое' size='5 МБ' additionalLabel='быстрее' />,
         value: ModelType.U2netP,
-        className: styles.segment,
       },
       {
         label: <Segment label='Среднее' size='42 МБ' />,
         value: ModelType.Quant,
-        className: styles.segment,
       },
     ]
 
@@ -58,7 +56,6 @@ export const ModelPicker = ({
           <Segment label='Высокое' size='84 МБ' additionalLabel='медленнее' />
         ),
         value: ModelType.Isnet,
-        className: styles.segment,
       })
     }
 

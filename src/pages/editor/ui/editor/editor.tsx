@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Application, Filter, ICanvas, Sprite } from 'pixi.js'
+import { Application, ICanvas } from 'pixi.js'
 
 import {
   ModelType,
@@ -11,29 +11,32 @@ import { Upload } from '../upload'
 import { BlurTypes, Controls } from '../controls'
 import { ModelPicker } from '../model-picker'
 import { Header } from '../header'
-import { useLoadSprites } from '../../lib/use-load-sprites'
-import { useApplyBackgroundFilters } from '../../lib/use-apply-background-filters'
+import { useFilteredSprites } from '../../lib/use-filtered-sprites'
 
 import styles from './editor.module.scss'
 
 export const Editor = () => {
   const [pixiApp, setPixiApp] = useState<Application<ICanvas>>()
-  const [imageSource, setImageSource] = useState<File>()
-  const [sprites, setSprites] = useState<Sprite[]>([])
   const [selectedFilter, setSelectedFilter] = useState<BlurTypes>(
     BlurTypes.None,
   )
-  const [filters, setFilters] = useState<Filter[]>([])
   const [modelType, setModelType] = useState<ModelType>(ModelType.U2netP)
-  const { imageData, isImageProcessing, modelLoadingProgress, isModelLoading } =
-    useBackgroundRemoval({ image: imageSource, modelType })
-  useLoadSprites({ setSprites, pixiApp, separatedImage: imageData })
-  useApplyBackgroundFilters({ pixiApp, filters, setSprites })
+  const {
+    imageData,
+    isImageProcessing,
+    modelLoadingProgress,
+    isModelLoading,
+    setImage,
+  } = useBackgroundRemoval({ modelType })
+  const { sprites, setFilters } = useFilteredSprites({
+    pixiApp,
+    separatedImage: imageData,
+  })
 
   return (
     <>
       <Header
-        setImageSource={setImageSource}
+        setImageSource={setImage}
         pixiApp={pixiApp}
         separatedImage={imageData}
       />
@@ -49,7 +52,7 @@ export const Editor = () => {
               />
             ) : (
               <Upload
-                onUpload={setImageSource}
+                onUpload={setImage}
                 isImageProcessing={isImageProcessing}
                 isModelLoading={isModelLoading}
                 separateImageError={false}

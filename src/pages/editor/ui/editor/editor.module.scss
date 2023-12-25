@@ -3,7 +3,7 @@
   display: grid;
   align-content: start;
   grid-gap: var(--padding-small);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
   overflow-y: scroll;
   overscroll-behavior-y: none;
   height: calc(100dvh - var(--header-height));
@@ -36,7 +36,7 @@
   padding: 24px;
   background: var(--background-secondary-color);
   pointer-events: all;
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
   height: fit-content;
 }
 
@@ -48,7 +48,7 @@
     margin: auto;
     grid-gap: var(--padding);
     padding: 0 var(--padding);
-    align-content: center;
+    align-items: center;
   }
 
   .imageBackWrapper {
@@ -71,10 +71,6 @@
 
 @media (min-width: 1440px) {
   .wrapper {
-    grid-template-columns: 1fr auto;
     width: 1024px;
-    margin: auto;
-    grid-gap: 24px;
-    align-content: center;
   }
 }

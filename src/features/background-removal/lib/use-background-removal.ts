@@ -7,16 +7,15 @@ import { runInference } from './inference'
 import { encodeImage } from './encode-image'
 
 interface UseBackgroundRemovalParams {
-  image: File | undefined
   modelType: ModelType | undefined
 }
 
 const IMAGE_RESOLUTION = 1080
 
 export const useBackgroundRemoval = ({
-  image,
   modelType,
 }: UseBackgroundRemovalParams) => {
+  const [image, setImage] = useState<File>()
   const {
     data,
     progress,
@@ -65,5 +64,6 @@ export const useBackgroundRemoval = ({
     isImageProcessing,
     isModelLoading,
     imageData,
+    setImage,
   }
 }
