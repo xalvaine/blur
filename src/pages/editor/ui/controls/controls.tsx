@@ -120,7 +120,7 @@ export const Controls = ({
     )
   }, [radius, selectedFilter, separatedImage, setFilters])
 
-  const showRadiusControl = useMemo(
+  const isRadiusControlAvailable = useMemo(
     () =>
       [
         BlurTypes.Vertical,
@@ -134,6 +134,16 @@ export const Controls = ({
   return (
     <div className={className}>
       <Typography.Title level={5} className={styles.title}>
+        Радиус размытия
+      </Typography.Title>
+      <Slider
+        disabled={!separatedImage || !isRadiusControlAvailable}
+        min={BLUR_RADIUS_MIN}
+        max={BLUR_RADIUS_MAX}
+        value={radius}
+        onChange={setRadius}
+      />
+      <Typography.Title level={5} className={styles.title}>
         Размытие
       </Typography.Title>
       <Select
@@ -143,20 +153,6 @@ export const Controls = ({
         className={styles.menu}
         options={menuItems}
       />
-      {showRadiusControl && (
-        <>
-          <Typography.Title level={5} className={styles.title}>
-            Радиус размытия
-          </Typography.Title>
-          <Slider
-            disabled={!separatedImage}
-            min={BLUR_RADIUS_MIN}
-            max={BLUR_RADIUS_MAX}
-            value={radius}
-            onChange={setRadius}
-          />
-        </>
-      )}
     </div>
   )
 }
