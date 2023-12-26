@@ -35,12 +35,15 @@ export const useFilteredSprites = ({
     }
 
     handleLoadSprites({ pixiApp, separatedImage }).then(setSprites)
+
+    return () => {
+      setSprites([])
+    }
   }, [pixiApp, separatedImage])
 
   useEffect(() => {
     setFilteredSprites(handleApplyBackgroundFilters(sprites, filters))
   }, [filters, handleApplyBackgroundFilters, sprites])
-
 
   return { sprites: filteredSprites, setFilters }
 }
