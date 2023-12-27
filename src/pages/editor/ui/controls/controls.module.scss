@@ -1,8 +1,3 @@
-.menu.menu.menu {
-  border-inline-end: unset;
-  width: 100%;
-}
-
 .title.title {
   margin: 0 0 16px;
 }
@@ -10,8 +5,24 @@
 .title.title:not(:first-child) {
   margin-top: 24px;
 }
+.icon.icon {
+  width: 18px;
+  height: 18px;
+}
 
-.option {
-  display: flex;
-  gap: 12px;
+.iconRotated {
+  transform: rotate(90deg);
+}
+
+.menuItem.menuItem {
+  transition: background 0.3s;
+}
+
+.menuItemActive.menuItemActive.menuItemActive {
+  background: var(--primary-color-alpha-20);
+  font-weight: 600;
+}
+
+.disabledSlider {
+  opacity: 0.2;
 }

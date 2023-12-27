@@ -1,7 +1,7 @@
 import './app.scss'
 
-import React, { useEffect, useState } from 'react'
-import { ConfigProvider, theme } from 'antd'
+import React, { useEffect } from 'react'
+import { ColorModeScript, useColorMode } from '@chakra-ui/react'
 import { SWRConfig } from 'swr'
 
 import { Editor } from 'pages/editor/ui'
@@ -14,35 +14,27 @@ export const App = () => {
     dbName: process.env.REACT_APP_DATABASE_NAME!,
     storeName: process.env.REACT_APP_STORE_NAME!,
   })
-  const [isDark, setIsDark] = useState(media.matches)
+  const { setColorMode } = useColorMode()
 
   useEffect(() => {
     const handleMediaChange = (event: MediaQueryListEvent) => {
-      setIsDark(event.matches)
+      setColorMode(event.matches ? `dark` : `light`)
     }
-    media.addEventListener(`change`, handleMediaChange)
 
+    setColorMode(media.matches ? `dark` : `light`)
+
+    media.addEventListener(`change`, handleMediaChange)
     return () => {
       media.removeEventListener(`change`, handleMediaChange)
     }
-  }, [])
+  }, [setColorMode])
 
   return (
-    <ConfigProvider
-      componentSize='large'
-      theme={{
-        algorithm: isDark ? theme.darkAlgorithm : undefined,
-        token: {
-          colorPrimary: `#7C50F3`,
-          fontSize: 16,
-          sizeUnit: 6,
-          controlHeight: 48,
-        },
-      }}
-    >
+    <>
+      <ColorModeScript initialColorMode={media.matches ? `dark` : `light`} />
       <SWRConfig value={{ provider: cacheProvider }}>
         <Editor />
       </SWRConfig>
-    </ConfigProvider>
+    </>
   )
 }

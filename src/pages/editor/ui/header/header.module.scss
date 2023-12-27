@@ -15,13 +15,12 @@
   height: 100%;
   position: relative;
   top: -5px;
-  left: -5px;
+  //left: -5px;
 }
 
 .buttons {
-  margin-right: -18px;
+  margin-right: -12px;
   display: flex;
-  gap: 4px;
 
   :global(.ant-btn):not(:disabled) {
     color: var(--primary-color);
@@ -30,6 +29,15 @@
   :global(.ant-btn.ant-btn-lg .anticon) {
     font-size: 24px;
   }
+}
+
+.shareIcon {
+  position: relative;
+  bottom: 1px;
+}
+
+.icon.icon {
+  color: var(--primary-color);
 }
 
 @media (min-width: 768px) {

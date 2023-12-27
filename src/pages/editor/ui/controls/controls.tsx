@@ -1,20 +1,11 @@
-import { Select, SelectProps, Slider, Typography } from 'antd'
-import {
-  BorderHorizontalOutlined,
-  BorderInnerOutlined,
-  BorderOutlined,
-  BorderVerticleOutlined,
-  StarTwoTone,
-} from '@ant-design/icons'
 import { Filter } from 'pixi.js'
 import {
   HorizontalBlurFilter,
   VerticalBlurFilter,
   ZoomBlurFilter,
 } from '@xalvaine/pixi-filters'
-import {
+import React, {
   Dispatch,
-  ReactNode,
   SetStateAction,
   useEffect,
   useMemo,
@@ -22,6 +13,26 @@ import {
 } from 'react'
 
 import styles from './controls.module.scss'
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  Button,
+  MenuList,
+  Heading,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+} from '@chakra-ui/react'
+import {
+  ExpandMoreOutlined,
+  BlurOffOutlined,
+  BlurOnOutlined,
+  BlurLinearOutlined,
+  FilterTiltShiftOutlined,
+} from '@mui/icons-material'
+import classNames from 'classnames'
 
 export enum BlurTypes {
   None = `none`,
@@ -31,40 +42,32 @@ export enum BlurTypes {
   Zoom = `zoom`,
 }
 
-interface OptionProps {
-  icon: ReactNode
-  label: string
-}
-
-const Option = ({ icon, label }: OptionProps) => {
-  return (
-    <div className={styles.option}>
-      {icon}
-      {label}
-    </div>
-  )
-}
-
-const menuItems: SelectProps['options'] = [
+const menuItems = [
   {
-    value: BlurTypes.None,
-    label: <Option icon={<BorderOutlined />} label='Без размытия' />,
+    blurType: BlurTypes.None,
+    icon: BlurOffOutlined,
+    label: `Без размытия`,
   },
   {
-    value: BlurTypes.Gaussian,
-    label: <Option icon={<BorderInnerOutlined />} label='Обычное' />,
+    blurType: BlurTypes.Gaussian,
+    icon: BlurOnOutlined,
+    label: `Обычное`,
   },
   {
-    value: BlurTypes.Vertical,
-    label: <Option icon={<BorderHorizontalOutlined />} label='Вертикальное' />,
+    blurType: BlurTypes.Vertical,
+    icon: BlurLinearOutlined,
+    label: `Вертикальное`,
+    className: styles.iconRotated,
   },
   {
-    value: BlurTypes.Horizontal,
-    label: <Option icon={<BorderVerticleOutlined />} label='Горизонтальное' />,
+    blurType: BlurTypes.Horizontal,
+    icon: BlurLinearOutlined,
+    label: `Горизонтальное`,
   },
   {
-    value: BlurTypes.Zoom,
-    label: <Option icon={<StarTwoTone />} label='Zoom' />,
+    blurType: BlurTypes.Zoom,
+    icon: FilterTiltShiftOutlined,
+    label: `Zoom`,
   },
 ]
 
@@ -110,6 +113,7 @@ export const Controls = ({
   setSelectedFilter,
 }: ControlsProps) => {
   const [radius, setRadius] = useState(BLUR_RADIUS_DEFAULT)
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false)
 
   useEffect(() => {
     setFilters(
@@ -131,28 +135,97 @@ export const Controls = ({
     [selectedFilter],
   )
 
+  useEffect(() => {
+    if (!isTooltipVisible) {
+      return
+    }
+    const hideTooltip = () => setIsTooltipVisible(false)
+    window.addEventListener(`mouseup`, hideTooltip)
+    window.addEventListener(`touchend`, hideTooltip)
+
+    return () => {
+      window.removeEventListener(`mouseup`, hideTooltip)
+      window.removeEventListener(`touchend`, hideTooltip)
+    }
+  }, [isTooltipVisible])
+
+  const selectedMenuItem =
+    menuItems.find((menuItem) => menuItem.blurType === selectedFilter) ||
+    menuItems[0]
+
   return (
     <div className={className}>
-      <Typography.Title level={5} className={styles.title}>
+      <Heading fontWeight={600} as='h6' size='sm' className={styles.title}>
         Радиус размытия
-      </Typography.Title>
+      </Heading>
       <Slider
-        disabled={!separatedImage || !isRadiusControlAvailable}
+        isDisabled={!separatedImage || !isRadiusControlAvailable}
         min={BLUR_RADIUS_MIN}
         max={BLUR_RADIUS_MAX}
         value={radius}
         onChange={setRadius}
-      />
-      <Typography.Title level={5} className={styles.title}>
+        onTouchStart={() => setIsTooltipVisible(true)}
+        onMouseDown={() => setIsTooltipVisible(true)}
+      >
+        <SliderTrack>
+          <SliderFilledTrack
+            className={
+              !separatedImage || !isRadiusControlAvailable
+                ? styles.disabledSlider
+                : undefined
+            }
+          />
+        </SliderTrack>
+        <SliderThumb boxSize={5} />
+      </Slider>
+      <Heading fontWeight={600} as='h6' size='sm' className={styles.title}>
         Размытие
-      </Typography.Title>
-      <Select
-        disabled={!separatedImage}
-        value={selectedFilter}
-        onSelect={setSelectedFilter}
-        className={styles.menu}
-        options={menuItems}
-      />
+      </Heading>
+      <Menu
+        gutter={4}
+        matchWidth
+        strategy='fixed'
+        placement='bottom'
+        variant='outline'
+      >
+        <MenuButton
+          isDisabled={!separatedImage}
+          textAlign='left'
+          as={Button}
+          leftIcon={
+            <selectedMenuItem.icon
+              className={classNames(styles.icon, selectedMenuItem.className)}
+            />
+          }
+          rightIcon={<ExpandMoreOutlined />}
+          width='100%'
+          variant='outline'
+          paddingInline={4}
+          iconSpacing={3}
+        >
+          {selectedMenuItem.label}
+        </MenuButton>
+        <MenuList>
+          {menuItems.map((menuItem) => (
+            <MenuItem
+              key={menuItem.blurType}
+              iconSpacing={3}
+              className={classNames(
+                styles.menuItem,
+                menuItem.blurType === selectedFilter && styles.menuItemActive,
+              )}
+              icon={
+                <menuItem.icon
+                  className={classNames(styles.icon, menuItem.className)}
+                />
+              }
+              onClick={() => setSelectedFilter(menuItem.blurType)}
+            >
+              {menuItem.label}
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
     </div>
   )
 }

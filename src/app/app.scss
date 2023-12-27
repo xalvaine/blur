@@ -10,22 +10,31 @@ body {
 
 :root {
   --primary-color: #7c50f3;
+  --primary-color-alpha-50: rgba(124, 80, 243, 0.5);
+  --primary-color-alpha-20: rgba(124, 80, 243, 0.2);
   --padding: 24px;
   --padding-small: 18px;
   --button-size: 40px;
   --header-height: calc(var(--padding-small) * 2 + var(--button-size));
   --border-radius: 8px;
+  --text-color-alt: #ffffff;
 }
 
 :root {
   --background-color: #ffffff;
   --background-secondary-color: #f5f5f5;
+  --background-tertiary-color: #ffffff;
+  --background-hover-color: rgba(0, 0, 0, 0.08);
+  --text-color: #1a202c;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: #000000;
     --background-secondary-color: #141414;
+    --background-tertiary-color: #1f1f1f;
+    --background-hover-color: rgba(255, 255, 255, 0.08);
+    --text-color: #ffffff;
   }
 }
 

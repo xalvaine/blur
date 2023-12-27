@@ -1,5 +1,5 @@
-import { Button, notification, Spin } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { Button, Spinner, Text, useToast } from '@chakra-ui/react'
+import { FileUploadOutlined } from '@mui/icons-material'
 import React, { useCallback, useEffect, useRef } from 'react'
 import { AxiosProgressEvent } from 'axios'
 
@@ -21,6 +21,7 @@ export const Upload = ({
   loadingProgress,
 }: UploadProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
+  const toast = useToast()
 
   const handleButtonClick = useCallback(() => {
     if (!inputRef.current) {
@@ -43,30 +44,29 @@ export const Upload = ({
 
   useEffect(() => {
     if (separateImageError) {
-      notification.error({
-        message: `Ошибка!`,
+      toast({
+        title: `Ошибка!`,
         description: `Не удалось выделить фон`,
+        status: `error`,
       })
     }
-  }, [separateImageError])
+  }, [separateImageError, toast])
 
   return (
     <div className={styles.wrapper}>
       {isModelLoading || isImageProcessing ? (
-        <Spin
-          tip={
-            isModelLoading
+        <div className={styles.spinnerContainer}>
+          <Spinner size='sm' />
+          <Text>
+            {isModelLoading
               ? `Загрузка модели ${
                   loadingProgress?.progress
                     ? Math.trunc(loadingProgress.progress * 100)
                     : 0
                 }%`
-              : `Выделение фона`
-          }
-          wrapperClassName={styles.spinnerContainer}
-        >
-          <div />
-        </Spin>
+              : `Выделение фона`}
+          </Text>
+        </div>
       ) : (
         <>
           <input
@@ -77,10 +77,10 @@ export const Upload = ({
             accept='image/png,image/jpeg'
           />
           <Button
-            block
+            height='100%'
+            variant='ghost'
             onClick={handleButtonClick}
-            className={styles.button}
-            icon={<UploadOutlined />}
+            leftIcon={<FileUploadOutlined />}
           >
             Выбрать изображение
           </Button>

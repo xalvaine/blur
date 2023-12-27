@@ -19,6 +19,15 @@
   margin: 0;
 }
 
+.menuItem.menuItem {
+  transition: background 0.3s;
+}
+
+.menuItemActive.menuItemActive.menuItemActive {
+  background: var(--primary-color-alpha-20);
+  font-weight: 600;
+}
+
 @media (min-width: 768px) {
   .additionalLabel {
     display: none;

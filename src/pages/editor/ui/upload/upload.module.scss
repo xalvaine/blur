@@ -9,12 +9,9 @@
   display: none;
 }
 
-.button.button.button.button {
-  height: 100%;
-  background: transparent;
-  border: unset;
-}
-
-.spinnerContainer.spinnerContainer :global(.ant-spin) {
-  max-height: unset;
+.spinnerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }

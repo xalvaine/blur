@@ -1,11 +1,14 @@
-import {
-  CloseOutlined,
-  DownloadOutlined,
-  ShareAltOutlined,
-} from '@ant-design/icons'
-import { Button } from 'antd'
 import { Dispatch, SetStateAction, useCallback } from 'react'
 import { Application, DisplayObject, ICanvas } from 'pixi.js'
+import { IconButton } from '@chakra-ui/react'
+import {
+  FileDownloadOutlined,
+  IosShareOutlined,
+  ShareOutlined,
+  CloseOutlined,
+} from '@mui/icons-material'
+
+import { isIOS } from 'shared/lib'
 
 import logo from './logo.png'
 import styles from './header.module.scss'
@@ -72,26 +75,38 @@ export const Header = ({
       <div className={styles.wrapper}>
         <img className={styles.image} src={logo} alt={'Логотип'} />
         <div className={styles.buttons}>
-          <Button
-            disabled={!separatedImage}
-            type='text'
-            shape='circle'
-            icon={<DownloadOutlined />}
-            onClick={handleDownload}
-          />
           {!!navigator.canShare && (
-            <Button
-              disabled={!separatedImage}
-              type='text'
-              shape='circle'
-              icon={<ShareAltOutlined />}
+            <IconButton
+              isRound
+              aria-label=''
+              isDisabled={!separatedImage}
+              variant='ghost'
+              className={separatedImage ? styles.icon : undefined}
+              icon={
+                isIOS() ? (
+                  <IosShareOutlined className={styles.shareIcon} />
+                ) : (
+                  <ShareOutlined className={styles.shareIcon} />
+                )
+              }
               onClick={handleShare}
             />
           )}
-          <Button
-            disabled={!separatedImage}
-            type='text'
-            shape='circle'
+          <IconButton
+            isRound
+            aria-label=''
+            isDisabled={!separatedImage}
+            variant='ghost'
+            className={separatedImage ? styles.icon : undefined}
+            icon={<FileDownloadOutlined />}
+            onClick={handleDownload}
+          />
+          <IconButton
+            isRound
+            aria-label=''
+            isDisabled={!separatedImage}
+            variant='ghost'
+            className={separatedImage ? styles.icon : undefined}
             icon={<CloseOutlined />}
             onClick={handleClear}
           />

@@ -1,31 +1,19 @@
-import { Select, SelectProps, Typography } from 'antd'
-import { Dispatch, SetStateAction, useMemo } from 'react'
+import React, { Dispatch, SetStateAction, useMemo } from 'react'
+import {
+  Button,
+  Heading,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react'
+import { ExpandMoreOutlined } from '@mui/icons-material'
 
 import { ModelType } from 'features/background-removal/lib'
 import { isIOS } from 'shared/lib'
 
 import styles from './model-picker.module.scss'
-
-interface SegmentProps {
-  label: string
-  additionalLabel?: string
-  size: string
-}
-const Segment = ({ label, size, additionalLabel }: SegmentProps) => {
-  return (
-    <div className={styles.modelOption}>
-      <Typography.Text className={styles.modelName}>
-        {label}
-        {additionalLabel && (
-          <span className={styles.additionalLabel}> - {additionalLabel}</span>
-        )}
-      </Typography.Text>
-      <Typography.Text className={styles.modelSize} type='secondary'>
-        {size}
-      </Typography.Text>
-    </div>
-  )
-}
+import classNames from 'classnames'
 
 interface ModelPickerProps {
   disabled?: boolean
@@ -38,42 +26,76 @@ export const ModelPicker = ({
   setModelType,
   disabled,
 }: ModelPickerProps) => {
-  const options = useMemo(() => {
-    const options: SelectProps['options'] = [
+  const menuItems = useMemo(() => {
+    const menuItems = [
       {
-        label: <Segment label='Низкое' size='5 МБ' additionalLabel='быстрее' />,
-        value: ModelType.U2netP,
+        label: `Низкое`,
+        size: `5 МБ`,
+        additionalLabel: `быстрее`,
+        modelType: ModelType.U2netP,
       },
       {
-        label: <Segment label='Среднее' size='42 МБ' />,
-        value: ModelType.Quant,
+        label: `Среднее`,
+        size: `42 МБ`,
+        modelType: ModelType.Quant,
       },
     ]
 
     if (!isIOS()) {
-      options.push({
-        label: (
-          <Segment label='Высокое' size='84 МБ' additionalLabel='медленнее' />
-        ),
-        value: ModelType.Isnet,
+      menuItems.push({
+        label: `Высокое`,
+        size: `84 МБ`,
+        additionalLabel: `медленнее`,
+        modelType: ModelType.Isnet,
       })
     }
 
-    return options
+    return menuItems
   }, [])
+
+  const selectedMenuItem =
+    menuItems.find((menuItem) => menuItem.modelType === modelType) ||
+    menuItems[0]
 
   return (
     <div>
-      <Typography.Title level={5} className={styles.title}>
+      <Heading fontWeight={600} size='sm' as='h6' className={styles.title}>
         Качество выделения фона
-      </Typography.Title>
-      <Select
-        disabled={disabled}
-        className={styles.select}
-        value={modelType}
-        onChange={setModelType as (value: unknown) => void}
-        options={options}
-      />
+      </Heading>
+      <Menu
+        gutter={4}
+        matchWidth
+        strategy='fixed'
+        placement='bottom'
+        variant='outline'
+      >
+        <MenuButton
+          isDisabled={disabled}
+          textAlign='left'
+          as={Button}
+          rightIcon={<ExpandMoreOutlined />}
+          width='100%'
+          variant='outline'
+          paddingInline={4}
+        >
+          {selectedMenuItem.label}
+        </MenuButton>
+        <MenuList>
+          {menuItems.map((menuItem) => (
+            <MenuItem
+              key={menuItem.modelType}
+              command={menuItem.size}
+              className={classNames(
+                styles.menuItem,
+                menuItem.modelType === modelType && styles.menuItemActive,
+              )}
+              onClick={() => setModelType(menuItem.modelType)}
+            >
+              {menuItem.label}
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
     </div>
   )
 }
