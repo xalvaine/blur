@@ -3725,6 +3725,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/yandex-metrika-tag@^2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@types/yandex-metrika-tag/-/yandex-metrika-tag-2.0.7.tgz#270f13a4cb473f934e81676c99e4ac2d999e0aff"
+  integrity sha512-N7hzN0CyH8rLPXbKQ4EiiL8kpKlUhUL75uucP93bGI/50J3sQ5lJJG7NKJmkToCth8RsMFWHLVmuD0vXxqhc3Q==
+
 "@types/yargs-parser@*":
   version "21.0.3"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-21.0.3.tgz#815e30b786d2e8f0dcd85fd5bcf5e1a04d008f15"
@@ -8485,7 +8490,7 @@ onnxruntime-web@../onnxruntime/js/web:
     flatbuffers "^1.12.0"
     guid-typescript "^1.0.9"
     long "^5.2.3"
-    onnxruntime-common "file:../../Library/Caches/Yarn/v6/npm-onnxruntime-web-1.16.3-857766de-2d2a-4235-853c-ca68c3003f55-1703636050541/node_modules/common"
+    onnxruntime-common "file:../../Library/Caches/Yarn/v6/npm-onnxruntime-web-1.16.3-f174a9a8-2951-43de-977b-2ccd2ef8f421-1703967717939/node_modules/common"
     platform "^1.3.6"
     protobufjs "^7.2.4"
 

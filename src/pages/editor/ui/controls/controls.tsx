@@ -116,6 +116,8 @@ export const Controls = ({
   const [isTooltipVisible, setIsTooltipVisible] = useState(false)
 
   useEffect(() => {
+    ym(96030221,`reachGoal`,selectedFilter)
+
     setFilters(
       getFilters(selectedFilter, radius, [
         separatedImage?.centerX || 0,
