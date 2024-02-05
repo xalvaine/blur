@@ -8481,16 +8481,20 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-"onnxruntime-common@file:../onnxruntime/js/common":
-  version "1.16.3"
+onnxruntime-common@1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/onnxruntime-common/-/onnxruntime-common-1.17.0.tgz#b2534ce021b1c1b19182bec39aaea8d547d2013e"
+  integrity sha512-Vq1remJbCPITjDMJ04DA7AklUTnbYUp4vbnm6iL7ukSt+7VErH0NGYfekRSTjxxurEtX7w41PFfnQlE6msjPJw==
 
-onnxruntime-web@../onnxruntime/js/web:
-  version "1.16.3"
+onnxruntime-web@1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/onnxruntime-web/-/onnxruntime-web-1.17.0.tgz#cff8e383a1ed4e72bd735350530a3666d9efb4aa"
+  integrity sha512-O5IZrnJ4ABMmgttdcuG/y3z8WT0zMieCeh/4Eq3lf3CeLwKLoPno38WbAvDiRUkfKjXUyu2mw532YIuGi61YJA==
   dependencies:
     flatbuffers "^1.12.0"
     guid-typescript "^1.0.9"
     long "^5.2.3"
-    onnxruntime-common "file:../../Library/Caches/Yarn/v6/npm-onnxruntime-web-1.16.3-f174a9a8-2951-43de-977b-2ccd2ef8f421-1703967717939/node_modules/common"
+    onnxruntime-common "1.17.0"
     platform "^1.3.6"
     protobufjs "^7.2.4"
 

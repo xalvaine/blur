@@ -16,6 +16,7 @@ export interface ModelData {
   mean: [number, number, number]
   std: [number, number, number]
   providers: string[]
+  alternativeStorageURL?: string
 }
 
 export const modelTypeToData: Record<ModelType, ModelData> = {
@@ -45,6 +46,7 @@ export const modelTypeToData: Record<ModelType, ModelData> = {
     mean: [124, 117, 104],
     std: [59, 57, 58],
     providers: ['wasm'],
+    alternativeStorageURL: `./models`,
   },
 }
 
@@ -53,7 +55,10 @@ interface UseModelParams {
 }
 
 const getURL = (modelType: ModelType) =>
-  `${process.env.REACT_APP_S3_URL}/${modelTypeToData[modelType].path}`
+  `${
+    modelTypeToData[modelType].alternativeStorageURL ||
+    process.env.REACT_APP_S3_URL
+  }/${modelTypeToData[modelType].path}`
 
 export const useModel = ({ modelType }: UseModelParams) => {
   const [progress, setProgress] = useState<AxiosProgressEvent>()

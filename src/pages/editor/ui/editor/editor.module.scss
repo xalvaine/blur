@@ -14,6 +14,10 @@
   }
 }
 
+.disableSelection * {
+  user-select: none;
+}
+
 .imageBack {
   position: sticky;
   top: 0;

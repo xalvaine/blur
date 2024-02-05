@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Application, ICanvas } from 'pixi.js'
+import classNames from 'classnames'
 
 import {
   ModelType,
@@ -39,8 +40,9 @@ export const Editor = () => {
         setImageSource={setImage}
         pixiApp={pixiApp}
         separatedImage={imageData}
+        className={styles.disableSelection}
       />
-      <div className={styles.wrapper}>
+      <div className={classNames(styles.wrapper, styles.disableSelection)}>
         <div className={styles.imageBack}>
           <div className={styles.image}>
             {imageData ? (

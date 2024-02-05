@@ -7,6 +7,7 @@ import {
   ShareOutlined,
   CloseOutlined,
 } from '@mui/icons-material'
+import classNames from 'classnames'
 
 import { isIOS } from 'shared/lib'
 
@@ -17,6 +18,7 @@ interface HeaderProps {
   setImageSource: Dispatch<SetStateAction<File | undefined>>
   pixiApp: Application<ICanvas> | undefined
   separatedImage: Components.Schemas.Segmentation | undefined
+  className?: string
 }
 
 const getFileName = () => `blurred-image-${Date.now()}.png`
@@ -25,6 +27,7 @@ export const Header = ({
   setImageSource,
   pixiApp,
   separatedImage,
+  className,
 }: HeaderProps) => {
   const handleClear = useCallback(() => {
     setImageSource(undefined)
@@ -71,7 +74,7 @@ export const Header = ({
   }
 
   return (
-    <header className={styles.header}>
+    <header className={classNames(styles.header, className)}>
       <div className={styles.wrapper}>
         <img className={styles.image} src={logo} alt={'Логотип'} />
         <div className={styles.buttons}>
