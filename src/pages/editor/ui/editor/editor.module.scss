@@ -1,12 +1,16 @@
 .wrapper {
   position: relative;
   display: grid;
-  align-content: start;
+  align-content: stretch;
   grid-gap: var(--padding-small);
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   overflow-y: scroll;
   overscroll-behavior-y: none;
-  height: calc(100dvh - var(--header-height));
+  --content-height: calc(100dvh - var(--header-height));
+  height: var(--content-height);
+  grid-template-rows:
+    calc(var(--content-height) - var(--padding-small) - var(--padding))
+    auto;
   scrollbar-width: none; /* Firefox */
 
   &::-webkit-scrollbar {
@@ -21,8 +25,8 @@
 .imageBack {
   position: sticky;
   top: 0;
-  height: 0;
-  padding-bottom: 100%;
+  padding-bottom: 0;
+  height: 100%;
 }
 
 .image {
@@ -42,22 +46,32 @@
   background: var(--background-secondary-color);
   pointer-events: all;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
-  height: fit-content;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--chakra-colors-whiteAlpha-300);
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: calc(var(--padding) / 2 - 2px);
+  }
 }
 
 @media (min-width: 768px) {
   .wrapper {
     grid-template-columns: 1fr auto;
-    width: 768px;
-    height: auto;
-    margin: auto;
+    grid-template-rows: unset;
     grid-gap: var(--padding);
+    align-content: stretch;
     padding: 0 var(--padding);
-    align-items: center;
+    padding-bottom: 24px;
   }
 
-  .imageBackWrapper {
-    padding: 0;
+  .imageBack {
   }
 
   .interactionsWrapper {
@@ -71,11 +85,9 @@
 
   .interactionsBlock {
     border-radius: 8px;
-  }
-}
 
-@media (min-width: 1440px) {
-  .wrapper {
-    width: 1024px;
+    &::before {
+      content: none;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Application, ICanvas } from 'pixi.js'
 import classNames from 'classnames'
 
@@ -16,6 +16,8 @@ import { useFilteredSprites } from '../../lib/use-filtered-sprites'
 
 import styles from './editor.module.scss'
 
+const INITIAL_SCROLL = 100
+
 export const Editor = () => {
   const [pixiApp, setPixiApp] = useState<Application<ICanvas>>()
   const [selectedFilter, setSelectedFilter] = useState<BlurTypes>(
@@ -29,10 +31,17 @@ export const Editor = () => {
     isModelLoading,
     setImage,
   } = useBackgroundRemoval({ modelType })
-  const { sprites, setFilters } = useFilteredSprites({
+  const { sprites, setFilters, setIsShownWithoutFilters } = useFilteredSprites({
     pixiApp,
     separatedImage: imageData,
   })
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (wrapperRef.current && imageData) {
+      wrapperRef.current.scrollTo({ top: INITIAL_SCROLL, behavior: `smooth` })
+    }
+  }, [imageData])
 
   return (
     <>
@@ -42,7 +51,10 @@ export const Editor = () => {
         separatedImage={imageData}
         className={styles.disableSelection}
       />
-      <div className={classNames(styles.wrapper, styles.disableSelection)}>
+      <div
+        ref={wrapperRef}
+        className={classNames(styles.wrapper, styles.disableSelection)}
+      >
         <div className={styles.imageBack}>
           <div className={styles.image}>
             {imageData ? (
@@ -51,6 +63,7 @@ export const Editor = () => {
                 setPixiApp={setPixiApp}
                 sprites={sprites}
                 separatedImage={imageData}
+                setIsShownWithoutFilters={setIsShownWithoutFilters}
               />
             ) : (
               <Upload

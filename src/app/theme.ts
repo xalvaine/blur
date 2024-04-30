@@ -42,6 +42,12 @@ export const theme = extendTheme(
               borderColor: `var(--primary-color)`,
               background: `transparent`,
             },
+            _hover: {
+              background: `transparent`,
+            },
+            _focus: {
+              background: `transparent`,
+            },
           },
           list: {
             bg: `var(--background-tertiary-color)`,

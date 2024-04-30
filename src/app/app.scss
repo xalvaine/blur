@@ -37,9 +37,3 @@ body {
     --text-color: #ffffff;
   }
 }
-
-@media (prefers-color-scheme: dark) and (min-width: 768px) {
-  :root {
-    --background-color: #000000;
-  }
-}

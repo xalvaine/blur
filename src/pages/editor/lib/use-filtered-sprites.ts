@@ -14,6 +14,7 @@ export const useFilteredSprites = ({
   const [filters, setFilters] = useState<Filter[]>([])
   const [sprites, setSprites] = useState<Sprite[]>([])
   const [filteredSprites, setFilteredSprites] = useState<Sprite[]>([])
+  const [isShownWithoutFilters, setIsShownWithoutFilters] = useState(false)
 
   const handleApplyBackgroundFilters = useCallback(
     (sprites: Sprite[], filters: Filter[]) => {
@@ -42,8 +43,13 @@ export const useFilteredSprites = ({
   }, [pixiApp, separatedImage])
 
   useEffect(() => {
-    setFilteredSprites(handleApplyBackgroundFilters(sprites, filters))
-  }, [filters, handleApplyBackgroundFilters, sprites])
+    setFilteredSprites(
+      handleApplyBackgroundFilters(
+        sprites,
+        isShownWithoutFilters ? [] : filters,
+      ),
+    )
+  }, [filters, handleApplyBackgroundFilters, isShownWithoutFilters, sprites])
 
-  return { sprites: filteredSprites, setFilters }
+  return { sprites: filteredSprites, setFilters, setIsShownWithoutFilters }
 }

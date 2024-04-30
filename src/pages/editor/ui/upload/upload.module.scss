@@ -3,6 +3,10 @@
   height: 100%;
   border-radius: 6px;
   overflow: hidden;
+
+  button {
+    background: transparent !important;
+  }
 }
 
 .input {

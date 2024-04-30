@@ -15,12 +15,14 @@ import {
 } from 'pixi.js'
 
 import styles from './scene.module.scss'
+import { useLongPress } from 'shared/lib'
 
 interface SceneProps<T = Application<ICanvas> | undefined> {
   pixiApp: T
   setPixiApp: Dispatch<SetStateAction<T>>
   sprites: Sprite[]
   separatedImage: Components.Schemas.Segmentation
+  setIsShownWithoutFilters: Dispatch<SetStateAction<boolean>>
 }
 
 export const Scene = ({
@@ -28,6 +30,7 @@ export const Scene = ({
   setPixiApp,
   sprites,
   separatedImage,
+  setIsShownWithoutFilters,
 }: SceneProps) => {
   const pixiContainerRef = useRef<HTMLDivElement>(null)
 
@@ -89,8 +92,10 @@ export const Scene = ({
     }
 
     const containerWidth = pixiContainerRef.current.offsetWidth
-    const scale =
-      containerWidth / Math.max(separatedImage.width, separatedImage.height)
+    const containerHeight = pixiContainerRef.current.offsetHeight
+    const scaleWidth = containerWidth / separatedImage.width
+    const scaleHeight = containerHeight / separatedImage.height
+    const scale = Math.min(scaleWidth, scaleHeight)
 
     pixiApp.renderer.resize(separatedImage.width, separatedImage.height)
     canvasElement.style.width = `${separatedImage.width * scale}px`
@@ -121,5 +126,17 @@ export const Scene = ({
     pixiApp.render()
   }, [pixiApp, sprites])
 
-  return <div className={styles.container} ref={pixiContainerRef} />
+  const { isLongPressed, elementProps } = useLongPress()
+
+  useEffect(() => {
+    setIsShownWithoutFilters(isLongPressed)
+  }, [isLongPressed, setIsShownWithoutFilters])
+
+  return (
+    <div
+      {...elementProps}
+      className={styles.container}
+      ref={pixiContainerRef}
+    />
+  )
 }
