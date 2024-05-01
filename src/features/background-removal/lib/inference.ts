@@ -41,7 +41,7 @@ const getCenterOfMass = (array: NdArray<Float32Array>) => {
 
 export const runInference = async (
   imageTensor: NdArray<Uint8Array>,
-  model: Blob,
+  model: ArrayBufferLike,
   modelData: ModelData,
   outputImageResolution: number,
 ) => {
@@ -58,7 +58,7 @@ export const runInference = async (
     modelData.std,
   )
   const predictionsDict = await runOnnxSession(
-    await model.arrayBuffer(),
+    model,
     inputTensor,
     modelData.inputKey,
     modelData.outputKey,

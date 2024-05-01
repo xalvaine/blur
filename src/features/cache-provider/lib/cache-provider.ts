@@ -23,7 +23,7 @@ export const createCacheProvider = async ({
   const map = new Map<Key, State>()
   const db = await openDB(
     dbName,
-    parseInt(process.env.REACT_DB_VERSION || `1`),
+    parseInt(process.env.REACT_APP_DB_VERSION || `1`),
     {
       upgrade(database, oldVersion) {
         if (oldVersion) {

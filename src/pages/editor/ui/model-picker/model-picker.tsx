@@ -10,7 +10,7 @@ import {
 import { ExpandMoreOutlined } from '@mui/icons-material'
 
 import { ModelType } from 'features/background-removal/lib'
-import { isIOS } from 'shared/lib'
+import {isIOS, isSafari} from 'shared/lib'
 
 import styles from './model-picker.module.scss'
 import classNames from 'classnames'
@@ -41,7 +41,7 @@ export const ModelPicker = ({
       },
     ]
 
-    if (!isIOS()) {
+    if (!isIOS() && !isSafari()) {
       menuItems.push({
         label: `Высокое`,
         size: `84 МБ`,
