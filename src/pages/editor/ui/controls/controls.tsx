@@ -27,7 +27,6 @@ import {
 } from '@chakra-ui/react'
 import {
   ExpandMoreOutlined,
-  BlurOffOutlined,
   BlurOnOutlined,
   BlurLinearOutlined,
   FilterTiltShiftOutlined,
@@ -35,7 +34,6 @@ import {
 import classNames from 'classnames'
 
 export enum BlurTypes {
-  None = `none`,
   Gaussian = `gaussian`,
   Vertical = `vertical`,
   Horizontal = `horizontal`,
@@ -43,11 +41,6 @@ export enum BlurTypes {
 }
 
 const menuItems = [
-  {
-    blurType: BlurTypes.None,
-    icon: BlurOffOutlined,
-    label: `Без размытия`,
-  },
   {
     blurType: BlurTypes.Gaussian,
     icon: BlurOnOutlined,
@@ -85,7 +78,6 @@ const getFilters = (
   center: [number, number],
 ) => {
   return {
-    [BlurTypes.None]: [],
     [BlurTypes.Gaussian]: [
       new VerticalBlurFilter({ radius }),
       new HorizontalBlurFilter({ radius }),

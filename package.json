@@ -15,7 +15,7 @@
     "framer-motion": "^10.16.16",
     "idb": "^8.0.0",
     "ndarray": "^1.0.19",
-    "onnxruntime-web": "~1.17.0",
+    "onnxruntime-web": "1.17.3",
     "pixi-filters": "^5.2.1",
     "pixi.js": "^7.3.2",
     "react": "^18.2.0",

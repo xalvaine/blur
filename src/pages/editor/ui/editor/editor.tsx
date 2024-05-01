@@ -21,7 +21,7 @@ const INITIAL_SCROLL = 100
 export const Editor = () => {
   const [pixiApp, setPixiApp] = useState<Application<ICanvas>>()
   const [selectedFilter, setSelectedFilter] = useState<BlurTypes>(
-    BlurTypes.None,
+    BlurTypes.Gaussian,
   )
   const [modelType, setModelType] = useState<ModelType>(ModelType.U2netP)
   const {
