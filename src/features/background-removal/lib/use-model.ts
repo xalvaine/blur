@@ -37,6 +37,7 @@ export const modelTypeToData: Record<ModelType, ModelData> = {
     mean: [124, 117, 104],
     std: [59, 57, 58],
     providers: ['wasm'],
+    alternativeStorageURL: `./models`,
   },
   [ModelType.U2netP]: {
     resolution: 320,
