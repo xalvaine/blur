@@ -1,3 +1,3 @@
 export const isYandexGames = () => {
-  return !!process.env.IS_YANDEX_GAMES
+  return !!process.env.REACT_APP_IS_YANDEX_GAMES
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PUBLIC_URL='.' IS_YANDEX_GAMES=1
+export PUBLIC_URL='.' REACT_APP_IS_YANDEX_GAMES=1
 yarn build
 
 BUILD_ARCHIVE_NAME='build.zip'
