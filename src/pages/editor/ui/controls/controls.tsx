@@ -60,7 +60,7 @@ const menuItems = [
   {
     blurType: BlurTypes.Zoom,
     icon: FilterTiltShiftOutlined,
-    label: `Zoom`,
+    label: `Зум`,
   },
 ]
 
