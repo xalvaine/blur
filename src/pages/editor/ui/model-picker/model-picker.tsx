@@ -10,7 +10,7 @@ import {
 import { ExpandMoreOutlined } from '@mui/icons-material'
 
 import { ModelType } from 'features/background-removal/lib'
-import { isIOS, isSafari, isYandexGames } from 'shared/lib'
+import { isIOS, isYandexGames } from 'shared/lib'
 
 import styles from './model-picker.module.scss'
 import classNames from 'classnames'
@@ -41,7 +41,7 @@ export const ModelPicker = ({
       },
     ]
 
-    if (!isIOS() && !isSafari() && !isYandexGames()) {
+    if (!isIOS() && !isYandexGames()) {
       menuItems.push({
         label: `Высокое`,
         size: `84 МБ`,

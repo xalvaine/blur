@@ -16,14 +16,18 @@ export const useBackgroundRemoval = ({
   modelType,
 }: UseBackgroundRemovalParams) => {
   const [image, setImage] = useState<File>()
-  const { model, progress, isModelLoading } = useModel({
+  const {
+    data,
+    progress,
+    isLoading: isModelLoading,
+  } = useModel({
     modelType: image ? modelType : undefined,
   })
   const [isImageProcessing, setIsImageProcessing] = useState(false)
   const [imageData, setImageData] = useState<Components.Schemas.Segmentation>()
 
   const separateImage = useCallback(
-    async (data: Blob, image: File) => {
+    async (data: File, image: File) => {
       if (modelType === undefined) {
         return
       }
@@ -31,7 +35,7 @@ export const useBackgroundRemoval = ({
       const decodedImage = await decodeImage(image)
       const { source, background, foreground, ...rest } = await runInference(
         decodedImage as unknown as NdArray<Uint8Array>,
-        await data.arrayBuffer(),
+        data,
         modelTypeToData[modelType],
         IMAGE_RESOLUTION,
       )
@@ -48,12 +52,12 @@ export const useBackgroundRemoval = ({
 
   useEffect(() => {
     setImageData(undefined)
-    if (!model || !image) {
+    if (!data || !image) {
       return
     }
     setIsImageProcessing(true)
-    separateImage(model, image).then(() => setIsImageProcessing(false))
-  }, [model, image, separateImage])
+    separateImage(data, image).then(() => setIsImageProcessing(false))
+  }, [data, image, separateImage])
 
   return {
     modelLoadingProgress: progress,

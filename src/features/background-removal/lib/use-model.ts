@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import axios, { AxiosProgressEvent } from 'axios'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export enum ModelType {
   Isnet, // Slowest, ~80MB
@@ -22,7 +22,7 @@ export interface ModelData {
 export const modelTypeToData: Record<ModelType, ModelData> = {
   [ModelType.Isnet]: {
     resolution: 1024,
-    path: `medium`,
+    path: `medium.onnx`,
     inputKey: `input`,
     outputKey: `output`,
     mean: [128, 128, 128],
@@ -63,63 +63,27 @@ const getURL = (modelType: ModelType) =>
 
 export const useModel = ({ modelType }: UseModelParams) => {
   const [progress, setProgress] = useState<AxiosProgressEvent>()
-  const [model, setModel] = useState<Blob>()
-  const [key, setKey] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
 
-  const fetcher = useCallback(
-    async (url: string) =>
-      new Promise<{ file: string }>(async (resolve, reject) => {
-        const reader = new FileReader()
-        const data = (
-          await axios.get(url, {
-            onDownloadProgress: setProgress,
-            responseType: `blob`,
-          })
-        ).data
-        reader.addEventListener(`loadend`, () => {
-          if (typeof reader.result === `string`) {
-            resolve({ file: reader.result })
-          } else {
-            reject(reader.error || reader.result)
-          }
-        })
-        reader.readAsDataURL(data)
-      }),
-    [],
-  )
-
-  const SWRResponse = useSWR<{ file: string }>(key, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
-
-  const handleFetchModel = useCallback(async (data: { file: string }) => {
-    return (await fetch(data.file)).blob()
+  const fetcher = useCallback(async (url: string) => {
+    return (
+      await axios.get(url, {
+        onDownloadProgress: setProgress,
+        responseType: `blob`,
+      })
+    ).data
   }, [])
 
-  const newKey =
-    modelType !== undefined && modelType in ModelType ? getURL(modelType) : null
+  const SWRResponse = useSWR(
+    modelType !== undefined && modelType in ModelType
+      ? getURL(modelType)
+      : null,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  )
 
-  useEffect(() => {
-    setModel(undefined)
-    setIsLoading(newKey !== null && newKey !== key)
-    setKey(newKey)
-  }, [key, modelType, newKey])
-
-  useEffect(() => {
-    if (SWRResponse.data) {
-      handleFetchModel(SWRResponse.data).then((model) => {
-        setModel(model)
-        setIsLoading(false)
-      })
-    }
-  }, [SWRResponse.data, handleFetchModel])
-
-  return {
-    model: newKey === key ? model : undefined,
-    progress,
-    isModelLoading: isLoading,
-  }
+  return { ...SWRResponse, progress }
 }
