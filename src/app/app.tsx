@@ -5,6 +5,8 @@ import { ColorModeScript, useColorMode } from '@chakra-ui/react'
 
 import { Editor } from 'pages/editor/ui'
 
+import { YandexGamesSdk } from './yandex-games-sdk'
+
 const media = window.matchMedia(`(prefers-color-scheme: dark)`)
 
 export const App = () => {
@@ -27,6 +29,7 @@ export const App = () => {
     <>
       <ColorModeScript initialColorMode={media.matches ? `dark` : `light`} />
       <Editor />
+      <YandexGamesSdk />
     </>
   )
 }
