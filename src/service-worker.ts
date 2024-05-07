@@ -1,6 +1,5 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
-import 'workbox-precaching'
 import { clientsClaim } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { registerRoute } from 'workbox-routing'
@@ -11,6 +10,7 @@ declare const self: ServiceWorkerGlobalScope
 clientsClaim()
 
 // https://create-react-app.dev/docs/making-a-progressive-web-app/#customization
+// @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ignored = self.__WB_MANIFEST
 
