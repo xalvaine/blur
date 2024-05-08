@@ -8,12 +8,14 @@ import {
   MenuList,
 } from '@chakra-ui/react'
 import { ExpandMoreOutlined } from '@mui/icons-material'
+import classNames from 'classnames'
 
 import { ModelType } from 'features/background-removal/lib'
 import { isIOS, isYandexGames } from 'shared/lib'
 
 import styles from './model-picker.module.scss'
-import classNames from 'classnames'
+import { MODEL_PICKER_NAMESPACE } from './model-picker.18n'
+import { useTranslation } from 'react-i18next'
 
 interface ModelPickerProps {
   disabled?: boolean
@@ -26,32 +28,33 @@ export const ModelPicker = ({
   setModelType,
   disabled,
 }: ModelPickerProps) => {
+  const { t } = useTranslation(MODEL_PICKER_NAMESPACE)
   const menuItems = useMemo(() => {
     const menuItems = [
       {
-        label: `Низкое`,
-        size: `5 МБ`,
+        label: t('low'),
+        size: t('size', { size: 5 }),
         additionalLabel: `быстрее`,
         modelType: ModelType.U2netP,
       },
       {
-        label: `Среднее`,
-        size: `42 МБ`,
+        label: t('medium'),
+        size: t('size', { size: 42 }),
         modelType: ModelType.Quant,
       },
     ]
 
     if (!isIOS() && !isYandexGames()) {
       menuItems.push({
-        label: `Высокое`,
-        size: `84 МБ`,
+        label: t('high'),
+        size: t('size', { size: 84 }),
         additionalLabel: `медленнее`,
         modelType: ModelType.Isnet,
       })
     }
 
     return menuItems
-  }, [])
+  }, [t])
 
   const selectedMenuItem =
     menuItems.find((menuItem) => menuItem.modelType === modelType) ||
@@ -60,7 +63,7 @@ export const ModelPicker = ({
   return (
     <div>
       <Heading fontWeight={600} size='sm' as='h6' className={styles.title}>
-        Качество выделения фона
+        {t('backgroundSelectionQuality')}
       </Heading>
       <Menu
         gutter={4}

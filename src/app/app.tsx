@@ -1,4 +1,5 @@
 import './app.scss'
+import './i18n'
 
 import React, { useEffect } from 'react'
 import { ColorModeScript, useColorMode } from '@chakra-ui/react'

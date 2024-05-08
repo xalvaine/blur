@@ -1,3 +1,4 @@
+import { CONTROLS_NAMESPACE } from './controls.18n'
 import { Filter } from 'pixi.js'
 import {
   HorizontalBlurFilter,
@@ -11,8 +12,6 @@ import React, {
   useMemo,
   useState,
 } from 'react'
-
-import styles from './controls.module.scss'
 import {
   Menu,
   MenuButton,
@@ -32,6 +31,9 @@ import {
   FilterTiltShiftOutlined,
 } from '@mui/icons-material'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
+
+import styles from './controls.module.scss'
 
 export enum BlurTypes {
   Gaussian = `gaussian`,
@@ -39,30 +41,6 @@ export enum BlurTypes {
   Horizontal = `horizontal`,
   Zoom = `zoom`,
 }
-
-const menuItems = [
-  {
-    blurType: BlurTypes.Gaussian,
-    icon: BlurOnOutlined,
-    label: `Обычное`,
-  },
-  {
-    blurType: BlurTypes.Vertical,
-    icon: BlurLinearOutlined,
-    label: `Вертикальное`,
-    className: styles.iconRotated,
-  },
-  {
-    blurType: BlurTypes.Horizontal,
-    icon: BlurLinearOutlined,
-    label: `Горизонтальное`,
-  },
-  {
-    blurType: BlurTypes.Zoom,
-    icon: FilterTiltShiftOutlined,
-    label: `Зум`,
-  },
-]
 
 interface ControlsProps {
   className?: string
@@ -104,6 +82,7 @@ export const Controls = ({
   selectedFilter,
   setSelectedFilter,
 }: ControlsProps) => {
+  const { t } = useTranslation(CONTROLS_NAMESPACE)
   const [radius, setRadius] = useState(BLUR_RADIUS_DEFAULT)
   const [isTooltipVisible, setIsTooltipVisible] = useState(false)
 
@@ -143,6 +122,33 @@ export const Controls = ({
     }
   }, [isTooltipVisible])
 
+  const menuItems = useMemo(
+    () => [
+      {
+        blurType: BlurTypes.Gaussian,
+        icon: BlurOnOutlined,
+        label: t('default'),
+      },
+      {
+        blurType: BlurTypes.Vertical,
+        icon: BlurLinearOutlined,
+        label: t('vertical'),
+        className: styles.iconRotated,
+      },
+      {
+        blurType: BlurTypes.Horizontal,
+        icon: BlurLinearOutlined,
+        label: t('horizontal'),
+      },
+      {
+        blurType: BlurTypes.Zoom,
+        icon: FilterTiltShiftOutlined,
+        label: t('zoomBlur'),
+      },
+    ],
+    [t],
+  )
+
   const selectedMenuItem =
     menuItems.find((menuItem) => menuItem.blurType === selectedFilter) ||
     menuItems[0]
@@ -150,7 +156,7 @@ export const Controls = ({
   return (
     <div className={className}>
       <Heading fontWeight={600} as='h6' size='sm' className={styles.title}>
-        Радиус размытия
+        {t('blurRadius')}
       </Heading>
       <Slider
         isDisabled={!separatedImage || !isRadiusControlAvailable}
@@ -173,7 +179,7 @@ export const Controls = ({
         <SliderThumb boxSize={5} />
       </Slider>
       <Heading fontWeight={600} as='h6' size='sm' className={styles.title}>
-        Размытие
+        {t('blurType')}
       </Heading>
       <Menu
         gutter={4}

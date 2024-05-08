@@ -2,7 +2,9 @@ import { Button, Spinner, Text, useToast } from '@chakra-ui/react'
 import { FileUploadOutlined } from '@mui/icons-material'
 import React, { useCallback, useEffect, useRef } from 'react'
 import { AxiosProgressEvent } from 'axios'
+import { useTranslation } from 'react-i18next'
 
+import { UPLOAD_NAMESPACE } from './upload.18n'
 import styles from './upload.module.scss'
 
 interface UploadProps {
@@ -20,6 +22,7 @@ export const Upload = ({
   separateImageError,
   loadingProgress,
 }: UploadProps) => {
+  const { t } = useTranslation(UPLOAD_NAMESPACE)
   const inputRef = useRef<HTMLInputElement>(null)
   const toast = useToast()
 
@@ -59,12 +62,12 @@ export const Upload = ({
           <Spinner size='sm' />
           <Text>
             {isModelLoading
-              ? `Загрузка модели ${
-                  loadingProgress?.progress
+              ? t('modelLoading', {
+                  percentage: loadingProgress?.progress
                     ? Math.trunc(loadingProgress.progress * 100)
-                    : 0
-                }%`
-              : `Выделение фона`}
+                    : 0,
+                })
+              : t('backgroundAndForegroundSeparation')}
           </Text>
         </div>
       ) : (
@@ -82,7 +85,7 @@ export const Upload = ({
             onClick={handleButtonClick}
             leftIcon={<FileUploadOutlined />}
           >
-            Выбрать изображение
+            {t(`selectImage`)}
           </Button>
         </>
       )}
