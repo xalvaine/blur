@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+import i18next from "i18next";
+
 import { isYandexGames } from 'shared/lib'
 
 export const YandexGamesSdk = () => {
@@ -13,6 +15,7 @@ export const YandexGamesSdk = () => {
       script.onload = () => {
         YaGames.init().then((sdk) => {
           sdk.features.LoadingAPI.ready()
+          i18next.changeLanguage(sdk.environment.i18n.lang)
         })
       }
     }
