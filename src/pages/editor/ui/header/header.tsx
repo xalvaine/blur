@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material'
 import classNames from 'classnames'
 
-import { isIOS } from 'shared/lib'
+import { isIOS, isYandexGames } from 'shared/lib'
 
 import logo from './logo.png'
 import styles from './header.module.scss'
@@ -76,7 +76,9 @@ export const Header = ({
   return (
     <header className={classNames(styles.header, className)}>
       <div className={styles.wrapper}>
-        <img className={styles.image} src={logo} alt={'Логотип'} />
+        {!isYandexGames() && (
+          <img className={styles.image} src={logo} alt={'Логотип'} />
+        )}
         <div className={styles.buttons}>
           {!!navigator.canShare && (
             <IconButton
