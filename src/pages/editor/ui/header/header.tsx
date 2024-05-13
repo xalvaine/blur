@@ -9,6 +9,7 @@ import {
 } from '@mui/icons-material'
 import classNames from 'classnames'
 
+import { useBackgroundRemoval } from 'features/background-removal/lib'
 import { isIOS, isYandexGames } from 'shared/lib'
 
 import logo from './logo.png'
@@ -17,7 +18,7 @@ import styles from './header.module.scss'
 interface HeaderProps {
   setImageSource: Dispatch<SetStateAction<File | undefined>>
   pixiApp: Application<ICanvas> | undefined
-  separatedImage: Components.Schemas.Segmentation | undefined
+  segmentation: ReturnType<typeof useBackgroundRemoval>['segmentation']
   className?: string
 }
 
@@ -26,7 +27,7 @@ const getFileName = () => `blurred-image-${Date.now()}.png`
 export const Header = ({
   setImageSource,
   pixiApp,
-  separatedImage,
+  segmentation,
   className,
 }: HeaderProps) => {
   const handleClear = useCallback(() => {
@@ -79,14 +80,14 @@ export const Header = ({
         {!isYandexGames() && (
           <img className={styles.image} src={logo} alt={'Логотип'} />
         )}
-        <div className={styles.buttons}>
+        <div className={styles.extra}>
           {!!navigator.canShare && (
             <IconButton
               isRound
               aria-label=''
-              isDisabled={!separatedImage}
+              isDisabled={!segmentation}
               variant='ghost'
-              className={separatedImage ? styles.icon : undefined}
+              className={segmentation ? styles.icon : undefined}
               icon={
                 isIOS() ? (
                   <IosShareOutlined className={styles.shareIcon} />
@@ -100,18 +101,18 @@ export const Header = ({
           <IconButton
             isRound
             aria-label=''
-            isDisabled={!separatedImage}
+            isDisabled={!segmentation}
             variant='ghost'
-            className={separatedImage ? styles.icon : undefined}
+            className={segmentation ? styles.icon : undefined}
             icon={<FileDownloadOutlined />}
             onClick={handleDownload}
           />
           <IconButton
             isRound
             aria-label=''
-            isDisabled={!separatedImage}
+            isDisabled={!segmentation}
             variant='ghost'
-            className={separatedImage ? styles.icon : undefined}
+            className={segmentation ? styles.icon : undefined}
             icon={<CloseOutlined />}
             onClick={handleClear}
           />

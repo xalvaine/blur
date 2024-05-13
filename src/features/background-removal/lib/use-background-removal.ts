@@ -12,6 +12,16 @@ interface UseBackgroundRemovalParams {
 
 const IMAGE_RESOLUTION = 1080
 
+interface Segmentation {
+  foreground: string
+  background: string
+  source: string
+  width: number
+  height: number
+  centerX?: number
+  centerY?: number
+}
+
 export const useBackgroundRemoval = ({
   modelType,
 }: UseBackgroundRemovalParams) => {
@@ -24,7 +34,7 @@ export const useBackgroundRemoval = ({
     modelType: image ? modelType : undefined,
   })
   const [isImageProcessing, setIsImageProcessing] = useState(false)
-  const [imageData, setImageData] = useState<Components.Schemas.Segmentation>()
+  const [segmentation, setSegmentation] = useState<Segmentation>()
 
   const separateImage = useCallback(
     async (data: File, image: File) => {
@@ -40,7 +50,7 @@ export const useBackgroundRemoval = ({
         IMAGE_RESOLUTION,
       )
 
-      setImageData({
+      setSegmentation({
         foreground: URL.createObjectURL(await encodeImage(foreground)),
         background: URL.createObjectURL(await encodeImage(background)),
         source: URL.createObjectURL(await encodeImage(source)),
@@ -51,7 +61,7 @@ export const useBackgroundRemoval = ({
   )
 
   useEffect(() => {
-    setImageData(undefined)
+    setSegmentation(undefined)
     if (!data || !image) {
       return
     }
@@ -63,7 +73,7 @@ export const useBackgroundRemoval = ({
     modelLoadingProgress: progress,
     isImageProcessing,
     isModelLoading,
-    imageData,
+    segmentation,
     setImage,
   }
 }

@@ -1,17 +1,5 @@
 import { CONTROLS_NAMESPACE } from './controls.18n'
-import { Filter } from 'pixi.js'
-import {
-  HorizontalBlurFilter,
-  VerticalBlurFilter,
-  ZoomBlurFilter,
-} from '@xalvaine/pixi-filters'
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { Dispatch, SetStateAction, useMemo } from 'react'
 import {
   Menu,
   MenuButton,
@@ -33,115 +21,65 @@ import {
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
-import styles from './controls.module.scss'
+import { useBackgroundRemoval } from 'features/background-removal/lib'
 
-export enum BlurTypes {
-  Gaussian = `gaussian`,
-  Vertical = `vertical`,
-  Horizontal = `horizontal`,
-  Zoom = `zoom`,
-}
+import { BlurType } from '../scene'
+
+import styles from './controls.module.scss'
 
 interface ControlsProps {
   className?: string
-  setFilters: Dispatch<SetStateAction<Filter[]>>
-  separatedImage: Components.Schemas.Segmentation | undefined
-  selectedFilter: BlurTypes
-  setSelectedFilter: Dispatch<SetStateAction<BlurTypes>>
+  segmentation: ReturnType<typeof useBackgroundRemoval>['segmentation']
+  blurType: typeof BlurType[keyof typeof BlurType]
+  setBlurType: Dispatch<SetStateAction<typeof BlurType[keyof typeof BlurType]>>
+  radius: number
+  setRadius: Dispatch<SetStateAction<number>>
 }
 
-const getFilters = (
-  blurTypes: BlurTypes,
-  radius: number,
-  center: [number, number],
-) => {
-  return {
-    [BlurTypes.Gaussian]: [
-      new VerticalBlurFilter({ radius }),
-      new HorizontalBlurFilter({ radius }),
-    ],
-    [BlurTypes.Vertical]: [new VerticalBlurFilter({ radius })],
-    [BlurTypes.Horizontal]: [new HorizontalBlurFilter({ radius })],
-    [BlurTypes.Zoom]: [
-      new ZoomBlurFilter({
-        radius,
-        center,
-      }),
-    ],
-  }[blurTypes]
-}
-
-const BLUR_RADIUS_DEFAULT = 16
 const BLUR_RADIUS_MIN = 1
 const BLUR_RADIUS_MAX = 50
 
 export const Controls = ({
   className,
-  setFilters,
-  separatedImage,
-  selectedFilter,
-  setSelectedFilter,
+  segmentation,
+  blurType,
+  setBlurType,
+  radius,
+  setRadius,
 }: ControlsProps) => {
   const { t } = useTranslation(CONTROLS_NAMESPACE)
-  const [radius, setRadius] = useState(BLUR_RADIUS_DEFAULT)
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false)
-
-  useEffect(() => {
-    ym(96030221, `reachGoal`, selectedFilter)
-
-    setFilters(
-      getFilters(selectedFilter, radius, [
-        separatedImage?.centerX || 0,
-        separatedImage?.centerY || 0,
-      ]),
-    )
-  }, [radius, selectedFilter, separatedImage, setFilters])
 
   const isRadiusControlAvailable = useMemo(
     () =>
       [
-        BlurTypes.Vertical,
-        BlurTypes.Horizontal,
-        BlurTypes.Gaussian,
-        BlurTypes.Zoom,
-      ].includes(selectedFilter),
-    [selectedFilter],
+        BlurType.Vertical,
+        BlurType.Horizontal,
+        BlurType.Gaussian,
+        BlurType.Zoom,
+      ].includes(blurType),
+    [blurType],
   )
-
-  useEffect(() => {
-    if (!isTooltipVisible) {
-      return
-    }
-    const hideTooltip = () => setIsTooltipVisible(false)
-    window.addEventListener(`mouseup`, hideTooltip)
-    window.addEventListener(`touchend`, hideTooltip)
-
-    return () => {
-      window.removeEventListener(`mouseup`, hideTooltip)
-      window.removeEventListener(`touchend`, hideTooltip)
-    }
-  }, [isTooltipVisible])
 
   const menuItems = useMemo(
     () => [
       {
-        blurType: BlurTypes.Gaussian,
+        blurType: BlurType.Gaussian,
         icon: BlurOnOutlined,
         label: t('default'),
       },
       {
-        blurType: BlurTypes.Vertical,
+        blurType: BlurType.Vertical,
         icon: BlurLinearOutlined,
         label: t('vertical'),
         className: styles.iconRotated,
       },
       {
-        blurType: BlurTypes.Horizontal,
+        blurType: BlurType.Horizontal,
         icon: BlurLinearOutlined,
         label: t('horizontal'),
       },
       {
-        blurType: BlurTypes.Zoom,
+        blurType: BlurType.Zoom,
         icon: FilterTiltShiftOutlined,
         label: t('zoomBlur'),
       },
@@ -150,8 +88,12 @@ export const Controls = ({
   )
 
   const selectedMenuItem =
-    menuItems.find((menuItem) => menuItem.blurType === selectedFilter) ||
-    menuItems[0]
+    menuItems.find((menuItem) => menuItem.blurType === blurType) || menuItems[0]
+
+  const handleSetBlurType = (blurType: typeof BlurType[keyof typeof BlurType]) => {
+    ym(96030221, `reachGoal`, blurType)
+    setBlurType(blurType)
+  }
 
   return (
     <div className={className}>
@@ -159,18 +101,16 @@ export const Controls = ({
         {t('blurRadius')}
       </Heading>
       <Slider
-        isDisabled={!separatedImage || !isRadiusControlAvailable}
+        isDisabled={!segmentation || !isRadiusControlAvailable}
         min={BLUR_RADIUS_MIN}
         max={BLUR_RADIUS_MAX}
         value={radius}
         onChange={setRadius}
-        onTouchStart={() => setIsTooltipVisible(true)}
-        onMouseDown={() => setIsTooltipVisible(true)}
       >
         <SliderTrack>
           <SliderFilledTrack
             className={
-              !separatedImage || !isRadiusControlAvailable
+              !segmentation || !isRadiusControlAvailable
                 ? styles.disabledSlider
                 : undefined
             }
@@ -189,7 +129,7 @@ export const Controls = ({
         variant='outline'
       >
         <MenuButton
-          isDisabled={!separatedImage}
+          isDisabled={!segmentation}
           textAlign='left'
           as={Button}
           leftIcon={
@@ -212,14 +152,14 @@ export const Controls = ({
               iconSpacing={3}
               className={classNames(
                 styles.menuItem,
-                menuItem.blurType === selectedFilter && styles.menuItemActive,
+                menuItem.blurType === blurType && styles.menuItemActive,
               )}
               icon={
                 <menuItem.icon
                   className={classNames(styles.icon, menuItem.className)}
                 />
               }
-              onClick={() => setSelectedFilter(menuItem.blurType)}
+              onClick={() => handleSetBlurType(menuItem.blurType)}
             >
               {menuItem.label}
             </MenuItem>

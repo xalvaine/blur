@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Application, ICanvas } from 'pixi.js'
+import React, { ComponentProps, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 
 import {
@@ -7,48 +6,46 @@ import {
   useBackgroundRemoval,
 } from 'features/background-removal/lib'
 
-import { Scene } from '../scene'
 import { Upload } from '../upload'
-import { BlurTypes, Controls } from '../controls'
+import { Controls } from '../controls'
 import { ModelPicker } from '../model-picker'
 import { Header } from '../header'
-import { useFilteredSprites } from '../../lib/use-filtered-sprites'
+import { usePixiApp } from '../../lib/use-pixi-app'
+import { BlurType, Scene } from '../scene'
 
 import styles from './editor.module.scss'
 
 const INITIAL_SCROLL = 100
+const BLUR_RADIUS_DEFAULT = 16
 
 export const Editor = () => {
-  const [pixiApp, setPixiApp] = useState<Application<ICanvas>>()
-  const [selectedFilter, setSelectedFilter] = useState<BlurTypes>(
-    BlurTypes.Gaussian,
-  )
+  const [blurType, setBlurType] = useState<
+    ComponentProps<typeof Controls>['blurType']
+  >(BlurType.Gaussian)
+  const [radius, setRadius] = useState(BLUR_RADIUS_DEFAULT)
   const [modelType, setModelType] = useState<ModelType>(ModelType.U2netP)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const {
-    imageData,
+    segmentation,
     isImageProcessing,
     modelLoadingProgress,
     isModelLoading,
     setImage,
   } = useBackgroundRemoval({ modelType })
-  const { sprites, setFilters, setIsShownWithoutFilters } = useFilteredSprites({
-    pixiApp,
-    separatedImage: imageData,
-  })
-  const wrapperRef = useRef<HTMLDivElement>(null)
+  const { pixiApp, setPixiApp, setSprites, setFilters } = usePixiApp()
 
   useEffect(() => {
-    if (wrapperRef.current && imageData) {
-      wrapperRef.current.scrollTo({ top: INITIAL_SCROLL, behavior: `smooth` })
+    if (segmentation) {
+      wrapperRef.current?.scrollTo({ top: INITIAL_SCROLL, behavior: `smooth` })
     }
-  }, [imageData])
+  }, [segmentation])
 
   return (
     <>
       <Header
         setImageSource={setImage}
         pixiApp={pixiApp}
-        separatedImage={imageData}
+        segmentation={segmentation}
         className={styles.disableSelection}
       />
       <div
@@ -57,13 +54,15 @@ export const Editor = () => {
       >
         <div className={styles.imageBack}>
           <div className={styles.image}>
-            {imageData ? (
+            {segmentation ? (
               <Scene
                 pixiApp={pixiApp}
                 setPixiApp={setPixiApp}
-                sprites={sprites}
-                separatedImage={imageData}
-                setIsShownWithoutFilters={setIsShownWithoutFilters}
+                segmentation={segmentation}
+                setFilters={setFilters}
+                setSprites={setSprites}
+                blurType={blurType}
+                radius={radius}
               />
             ) : (
               <Upload
@@ -79,10 +78,11 @@ export const Editor = () => {
         <div className={styles.interactionsBlock}>
           <Controls
             className={styles.controls}
-            setFilters={setFilters}
-            separatedImage={imageData}
-            selectedFilter={selectedFilter}
-            setSelectedFilter={setSelectedFilter}
+            segmentation={segmentation}
+            blurType={blurType}
+            setBlurType={setBlurType}
+            radius={radius}
+            setRadius={setRadius}
           />
           <ModelPicker
             disabled={isImageProcessing}

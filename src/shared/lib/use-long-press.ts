@@ -8,22 +8,11 @@ export const useLongPress = () => {
   const timer = useRef<number>()
 
   const handleStart = () => {
-    if (timer.current) {
-      return
-    }
-
     timer.current = +setTimeout(() => {
+      clearTimeout(timer.current)
       setIsLongPressed(true)
+      delete timer.current
     }, TIMEOUT_MS)
-  }
-
-  const handleMove = () => {
-    if (isLongPressed) {
-      return
-    }
-    clearTimeout(timer.current)
-    delete timer.current
-    delete touchIdentifier.current
   }
 
   const handleEnd = () => {
@@ -34,6 +23,9 @@ export const useLongPress = () => {
   }
 
   const handleTouch = (event: React.TouchEvent) => {
+    if (touchIdentifier.current || isLongPressed) {
+      return
+    }
     touchIdentifier.current = event.changedTouches.item(0).identifier
     handleStart()
   }
@@ -49,19 +41,15 @@ export const useLongPress = () => {
     }
   }
 
-  const handleTouchMove = (event: React.TouchEvent) => {
-    isCurrentTouchChanged(event, handleMove)
-  }
-
   const handleTouchEnd = (event: React.TouchEvent) => {
     isCurrentTouchChanged(event, handleEnd)
   }
 
   const elementProps: React.HTMLAttributes<HTMLElement> = {
-    onTouchStart: handleTouch,
-    onMouseDown: handleStart,
-    onTouchMove: handleTouchMove,
-    onMouseMove: handleMove,
+    onTouchStart: timer.current ? undefined : handleTouch,
+    onMouseDown: timer.current ? undefined : handleStart,
+    onTouchMove: timer.current && !isLongPressed ? handleTouchEnd : undefined,
+    onMouseMove: timer.current && !isLongPressed ? handleEnd : undefined,
     onTouchEnd: handleTouchEnd,
     onMouseUp: handleEnd,
   }

@@ -17,18 +17,10 @@
   //left: -5px;
 }
 
-.buttons {
+.extra {
   margin-right: -12px;
   margin-left: auto;
   display: flex;
-
-  :global(.ant-btn):not(:disabled) {
-    color: var(--primary-color);
-  }
-
-  :global(.ant-btn.ant-btn-lg .anticon) {
-    font-size: 24px;
-  }
 }
 
 .shareIcon {
