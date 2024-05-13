@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   HorizontalBlurFilter,
   VerticalBlurFilter,
@@ -70,26 +70,27 @@ export const Scene = ({
   radius,
 }: SceneProps) => {
   const { isLongPressed, elementProps } = useLongPress()
+  const [isSpritesLoading, setIsSpritesLoading] = useState(false)
 
   useEffect(() => {
     if (!segmentation) {
       return
     }
 
+    setIsSpritesLoading(true)
+
     const images: string[] = []
     images[SpriteIndex.Source] = segmentation.source
     images[SpriteIndex.Background] = segmentation.background
     images[SpriteIndex.Foreground] = segmentation.foreground
 
-    handleLoadSpritesFromImages(
-      images,
-      segmentation.width,
-      segmentation.height,
-    ).then(setSprites)
+    handleLoadSpritesFromImages(images, segmentation.width, segmentation.height)
+      .then(setSprites)
+      .then(() => setIsSpritesLoading(false))
   }, [segmentation, setSprites])
 
   useEffect(() => {
-    if (!segmentation) {
+    if (!segmentation || isSpritesLoading) {
       return
     }
 
@@ -102,7 +103,14 @@ export const Scene = ({
             segmentation.centerY || 0,
           ]),
     )
-  }, [radius, segmentation, setFilters, blurType, isLongPressed])
+  }, [
+    radius,
+    segmentation,
+    setFilters,
+    blurType,
+    isLongPressed,
+    isSpritesLoading,
+  ])
 
   return (
     <div {...elementProps} className={styles.wrapper}>
