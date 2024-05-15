@@ -6,10 +6,11 @@ import {
 } from '@xalvaine/pixi-filters'
 
 import { useBackgroundRemoval } from 'features/background-removal/lib'
-import { useLongPress } from 'shared/lib'
+import { LongPress } from 'shared/ui'
 
 import { usePixiApp } from '../../lib/use-pixi-app'
 import { handleLoadSpritesFromImages } from '../../lib/handle-load-sprites-from-images'
+import { useFiltersTransition } from '../../lib/use-filters-transition'
 import { Canvas } from '../canvas'
 
 import styles from './scene.module.scss'
@@ -69,8 +70,12 @@ export const Scene = ({
   blurType,
   radius,
 }: SceneProps) => {
-  const { isLongPressed, elementProps } = useLongPress()
   const [isSpritesLoading, setIsSpritesLoading] = useState(false)
+  const { handleLongPressChange, transitedRadius, transitedBlurType } =
+    useFiltersTransition({
+      blurType,
+      radius,
+    })
 
   useEffect(() => {
     if (!segmentation) {
@@ -96,24 +101,24 @@ export const Scene = ({
 
     setFilters(
       SpriteIndex.Background,
-      isLongPressed
-        ? []
-        : getFilters(blurType, radius, [
-            segmentation.centerX || 0,
-            segmentation.centerY || 0,
-          ]),
+      getFilters(transitedBlurType, transitedRadius, [
+        segmentation.centerX || 0,
+        segmentation.centerY || 0,
+      ]),
     )
   }, [
-    radius,
+    isSpritesLoading,
     segmentation,
     setFilters,
-    blurType,
-    isLongPressed,
-    isSpritesLoading,
+    transitedBlurType,
+    transitedRadius,
   ])
 
   return (
-    <div {...elementProps} className={styles.wrapper}>
+    <LongPress
+      className={styles.wrapper}
+      onLongPressChange={handleLongPressChange}
+    >
       {segmentation && (
         <Canvas
           pixiApp={pixiApp}
@@ -122,6 +127,6 @@ export const Scene = ({
           rendererHeight={segmentation.height}
         />
       )}
-    </div>
+    </LongPress>
   )
 }

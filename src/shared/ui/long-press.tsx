@@ -1,8 +1,14 @@
 import React, { useRef, useState } from 'react'
 
-const TIMEOUT_MS = 300
+const TIMEOUT_MS = 150
 
-export const useLongPress = () => {
+interface LongPressProps {
+  children: React.ReactNode
+  onLongPressChange: (isLongPressed: boolean) => void
+  className?: string
+}
+
+export const LongPress = ({ children, onLongPressChange, className }: LongPressProps) => {
   const [isLongPressed, setIsLongPressed] = useState(false)
   const touchIdentifier = useRef<React.Touch['identifier']>()
   const timer = useRef<number>()
@@ -11,12 +17,14 @@ export const useLongPress = () => {
     timer.current = +setTimeout(() => {
       clearTimeout(timer.current)
       setIsLongPressed(true)
+      onLongPressChange(true)
       delete timer.current
     }, TIMEOUT_MS)
   }
 
   const handleEnd = () => {
     setIsLongPressed(false)
+    onLongPressChange(false)
     clearTimeout(timer.current)
     delete timer.current
     delete touchIdentifier.current
@@ -45,14 +53,17 @@ export const useLongPress = () => {
     isCurrentTouchChanged(event, handleEnd)
   }
 
-  const elementProps: React.HTMLAttributes<HTMLElement> = {
-    onTouchStart: timer.current ? undefined : handleTouch,
-    onMouseDown: timer.current ? undefined : handleStart,
-    onTouchMove: timer.current && !isLongPressed ? handleTouchEnd : undefined,
-    onMouseMove: timer.current && !isLongPressed ? handleEnd : undefined,
-    onTouchEnd: handleTouchEnd,
-    onMouseUp: handleEnd,
-  }
-
-  return { isLongPressed, elementProps }
+  return (
+    <div
+      className={className}
+      onTouchStart={timer.current ? undefined : handleTouch}
+      onMouseDown={timer.current ? undefined : handleStart}
+      onTouchMove={timer.current && !isLongPressed ? handleTouchEnd : undefined}
+      onMouseMove={timer.current && !isLongPressed ? handleEnd : undefined}
+      onTouchEnd={handleTouchEnd}
+      onMouseUp={handleEnd}
+    >
+      {children}
+    </div>
+  )
 }

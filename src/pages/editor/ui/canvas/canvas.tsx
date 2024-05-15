@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { Application, ENV, settings } from 'pixi.js'
 
+import { usePixiApp } from '../../lib/use-pixi-app'
+
 import styles from './canvas.module.scss'
-import { usePixiApp } from 'pages/editor/lib/use-pixi-app'
 
 type SceneProps = Pick<
   ReturnType<typeof usePixiApp>,
@@ -96,7 +97,7 @@ export const Canvas = ({
     const resizeObserver = new ResizeObserver(() =>
       handleScaleApp(pixiApp, pixiContainer, rendererWidth, rendererHeight),
     )
-    resizeObserver.observe(pixiContainer)
+    resizeObserver.observe(document.body)
 
     return () => resizeObserver.disconnect()
   }, [pixiApp, rendererHeight, rendererWidth])
